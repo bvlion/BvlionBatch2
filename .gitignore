@@ -1,9 +1,7 @@
-HELP.md
 .gradle
 build/
+src/main/resources/twitter4j.properties
 !gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**
-!**/src/test/**
 
 ### STS ###
 .apt_generated
