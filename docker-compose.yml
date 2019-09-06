@@ -1,0 +1,11 @@
+version: '2'
+services:
+  db:
+    build: ./docker_db
+    environment:
+      TZ: "Asia/Tokyo"
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+    volumes:
+      - ./docker_db/init:/docker-entrypoint-initdb.d
+    ports:
+      - "3326:3306"
