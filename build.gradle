@@ -32,6 +32,8 @@ dependencies {
 	implementation 'org.apache.httpcomponents:fluent-hc:4.5.9'
 	implementation 'com.flickr4java:flickr4java:3.0.1'
 	implementation 'org.jsoup:jsoup:1.11.2'
+	implementation 'com.google.api-client:google-api-client:1.25.0'
+	implementation 'com.google.firebase:firebase-admin:6.10.0'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'
 }
