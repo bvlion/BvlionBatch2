@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.TwitterImageMapper">
+    <insert id="twitter_image_data_insert" parameterType="net.ambitious.bvlion.batch2.entity.TwitterImageEntity">
+        INSERT INTO twitter_image
+        (image_type, media_url, text, posted_date)
+        VALUES
+        (#{imageType}, #{mediaUrl}, #{text}, #{postedDate})
+    </insert>
+    <select id="twitterImageDataSelect" resultType="string">
+        SELECT media_url FROM twitter_image WHERE image_type = #{image_type}
+    </select>
+</mapper>

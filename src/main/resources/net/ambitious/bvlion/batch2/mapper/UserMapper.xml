@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.UserMapper">
+    <update id="fcmUpdate">
+        INSERT INTO users (user_name, fcm_id, in_home_flag)
+        VALUES (#{user}, #{fcm_id}, false)
+        ON DUPLICATE KEY UPDATE
+        fcm_id = #{fcm_id};
+    </update>
+
+    <update id="userModeUpdate">
+        UPDATE users SET
+        in_home_flag = #{mode}
+        WHERE user_name = #{user}
+    </update>
+
+    <select id="userCount" resultType="int">
+        SELECT COUNT(*) FROM users WHERE user_name != 'test' AND in_home_flag = 1
+    </select>
+
+    <select id="otherFcmTokens" resultType="string">
+        SELECT fcm_id FROM users WHERE user_name != #{user} AND user_name != 'test'
+    </select>
+</mapper>
