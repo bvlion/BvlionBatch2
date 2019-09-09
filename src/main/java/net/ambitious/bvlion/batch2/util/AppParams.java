@@ -14,4 +14,5 @@ public class AppParams {
 	private String firebaseId;
 	private String slackWebhookUrl;
 	private boolean production;
+	private String slackToken;
 }

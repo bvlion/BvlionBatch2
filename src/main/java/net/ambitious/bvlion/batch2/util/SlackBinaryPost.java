@@ -187,8 +187,8 @@ public class SlackBinaryPost {
 		 * SlackBinaryPostのインスタンスを生成する
 		 * @return SlackBinaryPostインスタンス
 		 */
-		public SlackBinaryPost build() throws IOException {
-			this.textDataMap.put("token", "xoxp-3421597306-15704583361-309728743010-5f2e2b89e7b18a0ea748c6d61c85e788");
+		public SlackBinaryPost build(String token) throws IOException {
+			this.textDataMap.put("token", token);
 			if (this.fileData == null || this.textDataMap.size() != 3) {
 				throw new IllegalArgumentException("必要データが登録されていません。");
 			}

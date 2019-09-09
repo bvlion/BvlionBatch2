@@ -17,4 +17,4 @@ PATH=${JAVA_HOME}/bin:${PATH}
 * twitter4j
     * Dropboxにあるのでsrc/main/resourcesに置く
 * 初期データ
-    * Dropboxにあるので
+    * Dropboxにあるので実行

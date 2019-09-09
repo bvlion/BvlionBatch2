@@ -148,7 +148,7 @@ public class TwitterImageConfiguration {
 						.title(item.getText())
 						.fileName(FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance()) + ".png")
 						.fileData(AccessUtil.getBinaryBytes(item.getMediaUrl()))
-						.build().post(appParams);
+						.build(appParams.getSlackToken()).post(appParams);
 			}
 			item.setImageType(this.twitterImageEnum.getImageType());
 
