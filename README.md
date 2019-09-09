@@ -16,3 +16,5 @@ PATH=${JAVA_HOME}/bin:${PATH}
 * application.propertiesの値はConfig Varsから値を確認し、export key=valueする
 * twitter4j
     * Dropboxにあるのでsrc/main/resourcesに置く
+* 初期データ
+    * Dropboxにあるので
