@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.TwitterChannelsMapper">
+
+	<resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.TwitterChannelsDataEntity">
+		<result property="imageType" column="image_type" />
+		<result property="slackChannel" column="slack_channel" />
+		<result property="searchValue" column="search_value" />
+	</resultMap>
+
+	<select id="selectEnableChannels" resultMap="entityResultMap">
+		SELECT image_type, slack_channel, search_value FROM twitter_channels WHERE enable_flag = 1
+	</select>
+</mapper>

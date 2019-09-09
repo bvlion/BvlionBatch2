@@ -41,19 +41,18 @@ public class SlackHttpPost {
 			log.info(payload);
 			return;
 		}
-		URL url = new URL(appParams.getSlackWebhookUrl());
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		var url = new URL(appParams.getSlackWebhookUrl());
+		var con = (HttpURLConnection) url.openConnection();
 		con.setRequestMethod("POST");
 		con.setUseCaches(false);
 		con.setDoInput(true);
 		con.setDoOutput(true);
 
-		try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
+		try (var wr = new DataOutputStream(con.getOutputStream())) {
 			wr.writeBytes(payload);
 		}
 
-		try (BufferedReader br = new BufferedReader(
-				new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+		try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 			log.info(
 					"Slack Post response is "
 							+ br.lines().collect(Collectors.joining("\n")) + "\n"

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.DatingMapper">
+
+	<resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.DatingDataEntity">
+		<result property="targetDate" column="target_date" />
+		<result property="message" column="message" />
+	</resultMap>
+
+	<select id="selectEnableChannels" resultMap="entityResultMap">
+		SELECT target_date, message FROM dating ORDER BY pk
+	</select>
+</mapper>
