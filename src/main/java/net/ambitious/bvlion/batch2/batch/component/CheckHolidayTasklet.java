@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
+import net.ambitious.bvlion.batch2.util.AppParams;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.codehaus.jettison.json.JSONArray;
@@ -28,9 +29,12 @@ public class CheckHolidayTasklet implements Tasklet {
 	@NonNull
 	private final HolidayMapper holidayMapper;
 
+	@NonNull
+	private final AppParams appParams;
+
 	private static final String GOOGLE_HOLIDAY_CHECK_URL
 			= "https://www.googleapis.com/calendar/v3/calendars/japanese__ja%%40holiday.calendar.google.com/events"
-			+ "?key=AIzaSyBTxx6po40TjVUCK8HD-tARV7CjU0dkbpk"
+			+ "?key=%s"
 			+ "&timeMax=%sT00%%3A00%%3A00Z"
 			+ "&timeMin=%sT00%%3A00%%3A00Z";
 
@@ -41,6 +45,7 @@ public class CheckHolidayTasklet implements Tasklet {
 
 		Request request = Request.Get(
 				String.format(GOOGLE_HOLIDAY_CHECK_URL,
+						appParams.getGoogleCalendarKey(),
 						AccessUtil.getNextDate(format, 2),
 						AccessUtil.getNextDate(format)
 				)

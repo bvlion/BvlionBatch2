@@ -15,4 +15,5 @@ public class AppParams {
 	private String slackWebhookUrl;
 	private boolean production;
 	private String slackToken;
+	private String googleCalendarKey;
 }
