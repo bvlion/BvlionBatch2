@@ -66,7 +66,7 @@ public class TwitterImageConfiguration {
 
 	@Scheduled(fixedRate = 2 * 60 * 1000)
 	public void check() {
-		this.twitterChannelsMapper.selectEnableChannels().forEach(value -> {
+		this.twitterChannelsMapper.selectEnableChannels(0).forEach(value -> {
 			try {
 				this.jobLauncher.run(job(value), new JobParameters(
 						Stream.of(new JobParameter(new Date()))

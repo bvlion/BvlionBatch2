@@ -9,6 +9,6 @@
 	</resultMap>
 
 	<select id="selectEnableChannels" resultMap="entityResultMap">
-		SELECT image_type, slack_channel, search_value FROM twitter_channels WHERE enable_flag = 1
+		SELECT image_type, slack_channel, search_value FROM twitter_channels WHERE enable_flag = 1 AND jorudan_flag = #{jorudan_flag}
 	</select>
 </mapper>

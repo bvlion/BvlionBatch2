@@ -33,7 +33,7 @@ public class DatingTasklet implements Tasklet {
 	private DatingMapper datingMapper;
 
 	@Override
-	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
+	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 		Calendar now = Calendar.getInstance();
 
 		String message = this.datingMapper.allDatings().stream()

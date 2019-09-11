@@ -5,7 +5,7 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletContextEvent;
@@ -13,9 +13,8 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import java.io.IOException;
 import java.net.URL;
-import java.util.logging.Level;
 
-@Log
+@Slf4j
 @Component
 @WebListener
 @RequiredArgsConstructor
@@ -35,8 +34,20 @@ public class ContextListener implements ServletContextListener {
 
 				FirebaseApp.initializeApp(options);
 			} catch (IOException e) {
-				log.log(Level.WARNING, "Firebase initialize Error", e);
+				log.warn("Firebase initialize Error", e);
 			}
+		}
+
+		try {
+			new SlackHttpPost(
+					"reminder",
+					"BvlionBatch",
+					"バッチが起動しました。",
+					AccessUtil.SPRING_ICON
+			).send(appParams);
+			AccessUtil.postGoogleHome("バッチが起動しました。", log, ContextListener.class, appParams);
+		} catch (IOException e) {
+			log.warn("Slack Post Error", e);
 		}
 
 		log.info("Context Initialized");
