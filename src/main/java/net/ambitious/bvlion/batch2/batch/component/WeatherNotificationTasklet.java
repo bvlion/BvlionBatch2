@@ -8,9 +8,7 @@ import net.ambitious.bvlion.batch2.mapper.WeatherSearchesMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
-import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
 import org.springframework.batch.core.StepContribution;
 import org.springframework.batch.core.scope.context.ChunkContext;
 import org.springframework.batch.core.step.tasklet.Tasklet;
@@ -36,34 +34,34 @@ public class WeatherNotificationTasklet implements Tasklet {
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
 		weatherSearchesMapper.selectWeatherSearchList().forEach(entity -> {
 			try {
-				Connection con = Jsoup.connect(entity.getPcUrl());
+				var con = Jsoup.connect(entity.getPcUrl());
 				con.userAgent(entity.getUserAgent());
-				Document document = con.get();
+				var document = con.get();
 
 				// 最高気温、最低気温、降水確率、コメント、アイコンのURLを取得
-				String maxTmp = document.selectFirst(
+				var maxTmp = document.selectFirst(
 						"#feature-history > table > tbody > tr:eq(0) > td:eq(1)"
 				).html();
-				String minTmp = document.selectFirst(
+				var minTmp = document.selectFirst(
 						"#feature-history > table > tbody > tr:eq(1) > td:eq(1)"
 				).html();
-				String rainyPercent = document.selectFirst(
+				var rainyPercent = document.selectFirst(
 						"#detail-day-night > div:eq(0) > div > div:eq(0) > div > div:eq(0) > span:eq(2)"
 				).html().replace("降水", "降水確率");
-				String comment = document.selectFirst(
+				var comment = document.selectFirst(
 						"#detail-day-night > div:eq(0) > div > div:eq(0) > div > div:eq(2)"
 				).html();
-				String realFeel = document.selectFirst(
+				var realFeel = document.selectFirst(
 						"#detail-day-night > div:eq(0) > div > div:eq(0) > div > div:eq(0) > span:eq(1)"
 				).html().split(" ")[1];
-				String[] wind = document.selectFirst(
+				var wind = document.selectFirst(
 						"#detail-day-night > div:eq(0) > div > div:eq(1) > div > div > ul > li:eq(1) > strong"
 				).html().split(" ");
-				String iconUrl = String.format(ICON_URL, document.selectFirst(
+				var iconUrl = String.format(ICON_URL, document.selectFirst(
 						"#detail-day-night > div:eq(0) > div > div:eq(0) > div > div:eq(1)"
 				).className().split(" ")[1]);
 
-				String message = AccessUtil.getNextDate() + "の" + entity.getAreaName() + "の天気は\\n"
+				var message = AccessUtil.getNextDate() + "の" + entity.getAreaName() + "の天気は\\n"
 						+ "*最高気温 " + maxTmp + "*\\n"
 						+ "*最低気温 " + minTmp + "*\\n"
 						+ "*" + rainyPercent + "*\\n"
@@ -81,7 +79,7 @@ public class WeatherNotificationTasklet implements Tasklet {
 						iconUrl
 				).send(appParams);
 
-				String googleHomeMessage = "エーシーシーユーウェザーによると、明日の" + entity.getAreaName() + "の天気は"
+				var googleHomeMessage = "エーシーシーユーウェザーによると、明日の" + entity.getAreaName() + "の天気は"
 						+ "最高気温 " + maxTmp + "、"
 						+ "最低気温 " + minTmp + "、"
 						+ rainyPercent + "、"

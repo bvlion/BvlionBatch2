@@ -81,7 +81,7 @@ public class SlackBinaryPost {
 		try {
 			write();
 			data = read();
-			JSONObject json = new JSONObject(data);
+			var json = new JSONObject(data);
 			if (json.getBoolean("ok")) {
 				log.info("Slack Binary Post response is " + data);
 			} else {

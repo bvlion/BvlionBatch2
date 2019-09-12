@@ -16,4 +16,5 @@ public class AppParams {
 	private boolean production;
 	private String slackToken;
 	private String googleCalendarKey;
+	private String googleHomeNotifierUrl;
 }

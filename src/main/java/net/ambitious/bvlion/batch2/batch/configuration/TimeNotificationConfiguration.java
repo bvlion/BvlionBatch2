@@ -97,7 +97,7 @@ public class TimeNotificationConfiguration {
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		this.jobLauncher.run(this.jobBuilderFactory.get("coopNotificationJob").start(
 				this.stepBuilderFactory.get("coopNotificationStep").tasklet((contribution, chunkContext) -> {
-					String message = "明日はコープさんです。空き箱を出してください。";
+					var message = "明日はコープさんです。空き箱を出してください。";
 					AccessUtil.postGoogleHome(
 							message,
 							log,
@@ -123,7 +123,7 @@ public class TimeNotificationConfiguration {
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		this.jobLauncher.run(this.jobBuilderFactory.get("alarmNotificationJob").start(
 				this.stepBuilderFactory.get("alarmNotificationStep").tasklet((contribution, chunkContext) -> {
-					int status = holidayMapper.nextDayStatusCheck();
+					var status = holidayMapper.nextDayStatusCheck();
 					String message = null;
 					if (status == HolidayEnum.明日は休み.getStatus()) {
 						message = "明日はお休みです。アラームの設定を解除して下さい。";

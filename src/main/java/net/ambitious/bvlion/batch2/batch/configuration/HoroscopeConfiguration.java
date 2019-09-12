@@ -8,7 +8,6 @@ import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.batch.core.*;
@@ -76,18 +75,18 @@ public class HoroscopeConfiguration {
 	}
 
 	private static String getHoroscopeMessage() {
-		String today = AccessUtil.getNow("yyyy/MM/dd");
-		StringBuilder message = new StringBuilder();
+		var today = AccessUtil.getNow("yyyy/MM/dd");
+		var message = new StringBuilder();
 
-		Request request = Request.Get("http://api.jugemkey.jp/api/horoscope/free/" + today);
+		var request = Request.Get("http://api.jugemkey.jp/api/horoscope/free/" + today);
 		Response res = null;
 		try {
 			res = request.execute();
-			JSONObject json = new JSONObject(new String(res.returnContent().asBytes(), StandardCharsets.UTF_8));
-			JSONObject horoscope = json.getJSONObject("horoscope");
-			JSONArray todayData = horoscope.getJSONArray(today);
-			for (int i = 0; i < todayData.length(); i++) {
-				JSONObject object = todayData.getJSONObject(i);
+			var json = new JSONObject(new String(res.returnContent().asBytes(), StandardCharsets.UTF_8));
+			var horoscope = json.getJSONObject("horoscope");
+			var todayData = horoscope.getJSONArray(today);
+			for (var i = 0; i < todayData.length(); i++) {
+				var object = todayData.getJSONObject(i);
 				if ("双子座".equals(object.getString("sign"))) {
 					message.append(today);
 					message.append("の双子座の運勢は第");

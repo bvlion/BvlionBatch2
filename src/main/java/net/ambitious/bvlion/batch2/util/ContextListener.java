@@ -27,7 +27,7 @@ public class ContextListener implements ServletContextListener {
 	public void contextInitialized(ServletContextEvent sce) {
 		if (FirebaseApp.getApps().isEmpty()) {
 			try {
-				FirebaseOptions options = new FirebaseOptions.Builder()
+				var options = new FirebaseOptions.Builder()
 						.setCredentials(GoogleCredentials.fromStream(new URL(appParams.getAdminSdkJsonUrl()).openStream()))
 						.setDatabaseUrl("https://" + appParams.getFirebaseId() + ".firebaseio.com/")
 						.build();

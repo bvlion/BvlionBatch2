@@ -34,14 +34,14 @@ public class DatingTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-		Calendar now = Calendar.getInstance();
+		var now = Calendar.getInstance();
 
-		String message = this.datingMapper.allDatings().stream()
+		var message = this.datingMapper.allDatings().stream()
 				.map(value -> {
 					if (value.getTargetDate().length() == 8) {
 						try {
-							Date anniversary = DateUtils.parseDate(value.getTargetDate(), "yyyyMMdd");
-							long totalDays = TimeUnit.DAYS.convert(
+							var anniversary = DateUtils.parseDate(value.getTargetDate(), "yyyyMMdd");
+							var totalDays = TimeUnit.DAYS.convert(
 									now.getTimeInMillis() - anniversary.getTime(), TimeUnit.MILLISECONDS
 							) + 1;
 							if (totalDays % 100 == 0) {
@@ -56,7 +56,7 @@ public class DatingTasklet implements Tasklet {
 						}
 					}
 					return "";
-				}).collect(Collectors.joining("¥n"));
+				}).collect(Collectors.joining("\n"));
 
 		if (message.length() > 0) {
 			AccessUtil.sendFcm(

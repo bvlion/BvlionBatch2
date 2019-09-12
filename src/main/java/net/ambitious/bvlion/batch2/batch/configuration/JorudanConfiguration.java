@@ -88,7 +88,7 @@ public class JorudanConfiguration {
 					log.warn(e.getMessage());
 					return;
 				}
-				final String message = "BatchでExceptionが発生したようです。";
+				final var message = "BatchでExceptionが発生したようです。";
 				AccessUtil.exceptionPost(message, log, ProjectControllerAdvice.class, e, appParams);
 			}
 		});
@@ -106,8 +106,8 @@ public class JorudanConfiguration {
 	}
 
 	private static ItemReader<JorudanDataEntity> reader(String hashTag) {
-		Twitter twitter = new TwitterFactory().getInstance();
-		Query query = new Query();
+		var twitter = new TwitterFactory().getInstance();
+		var query = new Query();
 		query.setQuery("from:jorudanlive AND #" + hashTag);
 		QueryResult result;
 		try {
@@ -124,7 +124,7 @@ public class JorudanConfiguration {
 	}
 
 	private MyBatisBatchItemWriter<JorudanDataEntity> writer() {
-		MyBatisBatchItemWriter<JorudanDataEntity> writer = new MyBatisBatchItemWriter<>();
+		var writer = new MyBatisBatchItemWriter<JorudanDataEntity>();
 		writer.setStatementId("net.ambitious.bvlion.batch2.mapper.JorudanDataMapper.jorudan_data_insert");
 		writer.setSqlSessionFactory(this.sqlSessionFactory);
 		return writer;
@@ -151,7 +151,7 @@ public class JorudanConfiguration {
 		@Override
 		public JorudanDataEntity process(JorudanDataEntity item) throws Exception {
 
-			AtomicBoolean isPostExec = new AtomicBoolean(true);
+			var isPostExec = new AtomicBoolean(true);
 			this.entityList.stream()
 					.map(JorudanDataEntity::getUrl)
 					.filter(item.getUrl()::equals)
@@ -162,19 +162,19 @@ public class JorudanConfiguration {
 			}
 
 			if (AccessUtil.isExecTime(appParams, isHoliday)) {
-				String[] details = item.getDetail().split("〕");
-				String section = details[0]
+				var details = item.getDetail().split("〕");
+				var section = details[0]
 						.substring(1)
 						.replaceAll("（.*）", "")
 						.replace("〜", "から")
 						+ "の区間";
-				String state = details[1].split("／")[0];
-				String googleHomeMessage = entity.getSearchValue() + "の" + section + "で"
+			var state = details[1].split("／")[0];
+			var googleHomeMessage = entity.getSearchValue() + "の" + section + "で"
 						+ (state.equals("止まってる") ? state : state + "の") + "ようです。";
 				AccessUtil.postGoogleHome(googleHomeMessage, log, JorudanConfiguration.class, appParams);
 			}
 
-			StringBuilder message = new StringBuilder();
+			var message = new StringBuilder();
 			message.append(item.getDetail());
 			if (StringUtils.isNoneBlank(item.getDescription())) {
 				message.append("\n");

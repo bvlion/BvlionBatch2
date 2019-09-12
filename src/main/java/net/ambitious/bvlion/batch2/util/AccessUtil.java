@@ -5,7 +5,6 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
-import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -62,22 +61,21 @@ public class AccessUtil {
 			return;
 		}
 		try {
-			URL url = new URL("http://localhost:8091/google-home-notifier");
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			var url = new URL(appParams.getGoogleHomeNotifierUrl());
+			var con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
 			con.setUseCaches(false);
 			con.setDoInput(true);
 			con.setDoOutput(true);
 
-			try (DataOutputStream wr = new DataOutputStream(con.getOutputStream())) {
-				byte[] bytes = ("text=" + message).getBytes(StandardCharsets.UTF_8);
-				for (byte textByte : bytes) {
+			try (var wr = new DataOutputStream(con.getOutputStream())) {
+				var bytes = ("text=" + message).getBytes(StandardCharsets.UTF_8);
+				for (var textByte : bytes) {
 					wr.writeByte(textByte);
 				}
 			}
 
-			try (BufferedReader br = new BufferedReader(
-					new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+			try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 				log.info(br.lines().collect(Collectors.joining("\n")));
 			}
 		} catch (IOException e) {
@@ -87,14 +85,14 @@ public class AccessUtil {
 
 	public static void accessGet(String accessUrl, Logger log, Class<?> clazz) {
 		try {
-			SSLContext ctx = SSLContext.getInstance("SSL");
+			var ctx = SSLContext.getInstance("SSL");
 			ctx.init(null, TM.toArray(new TrustManager[0]), new SecureRandom());
 
-			URL url = new URL(accessUrl);
-			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			var url = new URL(accessUrl);
+			var conn = (HttpsURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setSSLSocketFactory(ctx.getSocketFactory());
-			int responseCode = conn.getResponseCode();
+			var responseCode = conn.getResponseCode();
 
 			if (log != null) {
 				log.info("GET " + accessUrl + " HTTP/1.1 -> Response Code : " + responseCode);
@@ -108,7 +106,7 @@ public class AccessUtil {
 	}
 
 	public static void accessPut(String url, Logger log, Class<?> clazz) {
-		Request request = Request.Put(HOST.concat(url));
+		var request = Request.Put(HOST.concat(url));
 		Response res = null;
 		try {
 			res = request.execute();
@@ -127,13 +125,13 @@ public class AccessUtil {
 			return "";
 		}
 
-		StringBuilder formatWord = new StringBuilder();
-		boolean isHan = false;
-		boolean isBeforeZen = true;
-		boolean notHasHan = true;
+		var formatWord = new StringBuilder();
+		var isHan = false;
+		var isBeforeZen = true;
+		var notHasHan = true;
 
-		char[] chars = enWord.toCharArray();
-		for (char enWordChar : chars) {
+		var chars = enWord.toCharArray();
+		for (var enWordChar : chars) {
 			if (String.valueOf(enWordChar).equals(" ") || String.valueOf(enWordChar).equals("　")) {
 				formatWord.append(" ");
 				isHan = false;
@@ -159,21 +157,19 @@ public class AccessUtil {
 			return formatWord.toString();
 		}
 
-		String accessUrl;
-		accessUrl = String.format(E2K_URL, URLEncoder.encode(enWord, StandardCharsets.UTF_8));
+		var accessUrl = String.format(E2K_URL, URLEncoder.encode(enWord, StandardCharsets.UTF_8));
 
-		StringBuilder response = new StringBuilder();
+		var response = new StringBuilder();
 		try {
-			SSLContext ctx = SSLContext.getInstance("SSL");
+			var ctx = SSLContext.getInstance("SSL");
 			ctx.init(null, TM.toArray(new TrustManager[0]), new SecureRandom());
 
-			URL url = new URL(accessUrl);
-			HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+			var url = new URL(accessUrl);
+			var conn = (HttpsURLConnection) url.openConnection();
 			conn.setDoOutput(true);
 			conn.setSSLSocketFactory(ctx.getSocketFactory());
 
-			try (BufferedReader br = new BufferedReader(
-					new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+			try (var br = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
 				response.append(br.lines().collect(Collectors.joining()));
 			}
 
@@ -184,11 +180,11 @@ public class AccessUtil {
 		}
 
 		try {
-			JSONArray jsonWords = new JSONObject(response.toString()).getJSONArray("words");
+			var jsonWords = new JSONObject(response.toString()).getJSONArray("words");
 
-			StringBuilder jaWord = new StringBuilder();
-			for (int i = 0; i < jsonWords.length(); i++) {
-				JSONObject jsonWord = jsonWords.getJSONObject(i);
+			var jaWord = new StringBuilder();
+			for (var i = 0; i < jsonWords.length(); i++) {
+				var jsonWord = jsonWords.getJSONObject(i);
 				if (!StringUtils.isBlank(jaWord)) {
 					jaWord.append(" ");
 				}
@@ -206,7 +202,7 @@ public class AccessUtil {
 	}
 
 	public static String getNextDate(String format, int addDate) {
-		Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
+		var calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
 		calendar.add(Calendar.DATE, addDate);
 		return DateTimeFormatter.ofPattern(format).format(
 				LocalDateTime.ofInstant(calendar.toInstant(),
@@ -241,12 +237,12 @@ public class AccessUtil {
 	}
 
 	public static byte[] getBinaryBytes(String binaryUrl) throws IOException {
-		URL url = new URL(binaryUrl);
-		HttpURLConnection con = (HttpURLConnection) url.openConnection();
+		var url = new URL(binaryUrl);
+		var con = (HttpURLConnection) url.openConnection();
 
-		ByteArrayOutputStream bout = new ByteArrayOutputStream();
-		try (InputStream is = con.getInputStream()) {
-			byte[] data = new byte[1024];
+		var bout = new ByteArrayOutputStream();
+		try (var is = con.getInputStream()) {
+			var data = new byte[1024];
 			int len;
 			while ((len = is.read(data, 0, 1024)) != -1) {
 				bout.write(data, 0, len);
@@ -288,8 +284,8 @@ public class AccessUtil {
 
 	public static void sendFcm(String message, AppParams appParams, Logger log) {
 		try {
-			URL url = new URL("https://fcm.googleapis.com/v1/projects/" + appParams.getFirebaseId() + "/messages:send");
-			HttpURLConnection con = (HttpURLConnection) url.openConnection();
+			var url = new URL("https://fcm.googleapis.com/v1/projects/" + appParams.getFirebaseId() + "/messages:send");
+			var con = (HttpURLConnection) url.openConnection();
 			con.setRequestMethod("POST");
 			con.setRequestProperty("Authorization", "Bearer " + getAccessToken(appParams));
 			con.setRequestProperty("Content-Type", "application/json; UTF-8");
@@ -297,12 +293,11 @@ public class AccessUtil {
 
 			con.connect();
 
-			try (PrintStream ps = new PrintStream(con.getOutputStream(), false, StandardCharsets.UTF_8)) {
+			try (var ps = new PrintStream(con.getOutputStream(), false, StandardCharsets.UTF_8)) {
 				ps.print(message);
 			}
 
-			try (BufferedReader br = new BufferedReader(
-					new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+			try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 				log.info(br.lines().collect(Collectors.joining("\n")));
 			}
 
@@ -312,7 +307,7 @@ public class AccessUtil {
 	}
 
 	private static String getAccessToken(AppParams appParams) throws IOException {
-		GoogleCredential googleCredential = GoogleCredential
+		var googleCredential = GoogleCredential
 				.fromStream(new URL(appParams.getAdminSdkJsonUrl()).openStream())
 				.createScoped(Collections.singletonList("https://www.googleapis.com/auth/firebase.messaging"));
 		googleCredential.refreshToken();
@@ -321,15 +316,15 @@ public class AccessUtil {
 
 	public static String createTokenMessage(String token, String title, String body, String channelId) {
 		try {
-			JSONObject data = new JSONObject();
+			var data = new JSONObject();
 			data.put("body", body);
 			data.put("title", title);
 			data.put("channelId", channelId);
-			JSONObject message = new JSONObject();
+			var message = new JSONObject();
 			message.put("token", token);
 			message.put("data", data);
 			message.put("android", new JSONObject().put("priority", "high"));
-			JSONObject main = new JSONObject();
+			var main = new JSONObject();
 			main.put("message", message);
 			return main.toString();
 		} catch (JSONException e) {
@@ -340,15 +335,15 @@ public class AccessUtil {
 
 	public static String createTopicMessage(String title, String body, String channelId) {
 		try {
-			JSONObject data = new JSONObject();
+			var data = new JSONObject();
 			data.put("body", body);
 			data.put("title", title);
 			data.put("channelId", channelId);
-			JSONObject message = new JSONObject();
+			var message = new JSONObject();
 			message.put("topic", "server_message");
 			message.put("data", data);
 			message.put("android", new JSONObject().put("priority", "high"));
-			JSONObject main = new JSONObject();
+			var main = new JSONObject();
 			main.put("message", message);
 			return main.toString();
 		} catch (JSONException e) {

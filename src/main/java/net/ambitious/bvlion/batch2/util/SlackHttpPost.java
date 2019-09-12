@@ -28,7 +28,7 @@ public class SlackHttpPost {
 	}
 
 	public void send(AppParams appParams) throws IOException {
-		final String payload = "payload=" + URLEncoder.encode("{\""
+		final var payload = "payload=" + URLEncoder.encode("{\""
 				+ "channel\": \"#" + this.channel + "\","
 				+ "\"as_user\": \"true\","
 				+ "\"username\": \"" + this.username + "\","

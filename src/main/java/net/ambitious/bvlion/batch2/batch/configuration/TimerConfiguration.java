@@ -28,7 +28,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -78,13 +77,13 @@ public class TimerConfiguration {
 	}
 
 	private ItemReader<TimerEntity> reader() {
-		Calendar cal = Calendar.getInstance();
+		var cal = Calendar.getInstance();
 
-		Map<String, Object> parameterValues = new HashMap<>();
+		var parameterValues = new HashMap<String, Object>();
 		parameterValues.put("do_exec_time", FastDateFormat.getInstance("HHmm").format(cal) + "00");
 		parameterValues.put("exec_started_flag", TimerDateEnum.columnName(cal.get(Calendar.DAY_OF_WEEK)));
 
-		MyBatisCursorItemReader<TimerEntity> reader = new MyBatisCursorItemReader<>();
+		var reader = new MyBatisCursorItemReader<TimerEntity>();
 		reader.setParameterValues(parameterValues);
 		reader.setSqlSessionFactory(this.sqlSessionFactory);
 		reader.setQueryId("net.ambitious.bvlion.batch2.mapper.TimerDataMapper.selectExecTimerSetting");
@@ -119,7 +118,7 @@ public class TimerConfiguration {
 			}
 			switch (entity.getBehaviorType()) {
 				case 1: // エアコンON
-					StringBuilder param = new StringBuilder("\" timer" + System.currentTimeMillis() + " … ");
+					var param = new StringBuilder("\" timer" + System.currentTimeMillis() + " … ");
 					switch (entity.getAirconType()) {
 						case 1: // 冷房
 							param.append("aircon:cool");

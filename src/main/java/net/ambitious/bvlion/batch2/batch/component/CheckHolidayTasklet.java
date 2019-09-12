@@ -40,10 +40,10 @@ public class CheckHolidayTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) throws Exception {
-		final String format = "yyyy-MM-dd";
-		int holiday = 0;
+		final var format = "yyyy-MM-dd";
+		var holiday = 0;
 
-		Request request = Request.Get(
+		var request = Request.Get(
 				String.format(GOOGLE_HOLIDAY_CHECK_URL,
 						appParams.getGoogleCalendarKey(),
 						AccessUtil.getNextDate(format, 2),
@@ -64,7 +64,7 @@ public class CheckHolidayTasklet implements Tasklet {
 			}
 		}
 
-		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
+		var cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
 		cal.add(Calendar.DATE, 1);
 
 		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {

@@ -28,7 +28,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import twitter4j.Query;
-import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 
@@ -91,8 +90,8 @@ public class TwitterImageConfiguration {
 	}
 
 	private static ItemReader<TwitterImageEntity> reader(TwitterChannelsDataEntity value) {
-		Twitter twitter = new TwitterFactory().getInstance();
-		Query query = new Query();
+		var twitter = new TwitterFactory().getInstance();
+		var query = new Query();
 		query.setQuery(value.getSearchValue());
 		try {
 			return new ListItemReader<>(
@@ -109,7 +108,7 @@ public class TwitterImageConfiguration {
 	}
 
 	private MyBatisBatchItemWriter<TwitterImageEntity> writer() {
-		MyBatisBatchItemWriter<TwitterImageEntity> writer = new MyBatisBatchItemWriter<>();
+		var writer = new MyBatisBatchItemWriter<TwitterImageEntity>();
 		writer.setStatementId("net.ambitious.bvlion.batch2.mapper.TwitterImageMapper.twitter_image_data_insert");
 		writer.setSqlSessionFactory(this.sqlSessionFactory);
 		return writer;
@@ -135,7 +134,7 @@ public class TwitterImageConfiguration {
 				return null;
 			}
 
-			AtomicBoolean isPostExec = new AtomicBoolean(true);
+			var isPostExec = new AtomicBoolean(true);
 			this.entityList.stream().filter(item.getMediaUrl()::equals).forEach(s -> isPostExec.set(false));
 
 			if (!isPostExec.get()) {

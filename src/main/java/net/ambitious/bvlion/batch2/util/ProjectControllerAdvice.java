@@ -26,14 +26,14 @@ public class ProjectControllerAdvice {
 	@ExceptionHandler
 	@ResponseBody
 	public Map<String, String> handleError(Exception exception) {
-		final String message = "ControllerでExceptionが発生したようです。";
+		final var message = "ControllerでExceptionが発生したようです。";
 
 		if (!(exception instanceof HttpRequestMethodNotSupportedException)
 				&& !(exception instanceof HttpMediaTypeNotSupportedException)) {
 			AccessUtil.exceptionPost(message, log, ProjectControllerAdvice.class, exception, appParams);
 		}
 
-		Map<String, String> errorMap = new HashMap<>();
+		var errorMap = new HashMap<String, String>();
 		errorMap.put("error", exception.getMessage());
 
 		return errorMap;

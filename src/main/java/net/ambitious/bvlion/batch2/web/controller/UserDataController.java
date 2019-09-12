@@ -51,7 +51,7 @@ public class UserDataController {
 		// 在宅数取得
 		int count = this.userMapper.userCount();
 		// カメラ起動状態
-		RealtimeSettingEntity realtimeSettingEntity = this.realtimeSettingMapper.selectRealtimeSetting();
+		var realtimeSettingEntity = this.realtimeSettingMapper.selectRealtimeSetting();
 
 		int cameraMode = -1;
 
@@ -65,7 +65,7 @@ public class UserDataController {
 		}
 
 		if (cameraMode > -1) {
-			final int cameraModeValue = cameraMode;
+			final var cameraModeValue = cameraMode;
 			ref.addListenerForSingleValueEvent(new ValueEventListener() {
 				@Override
 				public void onDataChange(DataSnapshot snapshot) {
