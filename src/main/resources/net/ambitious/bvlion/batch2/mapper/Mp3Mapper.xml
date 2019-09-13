@@ -17,19 +17,12 @@
 
     <insert id="mp3insert">
         INSERT INTO mp3
-        (file_name, song_name)
+        (file_name, song_name, song_url)
         VALUES
-        (#{file_name}, #{song_name})
+        (#{file_name}, #{song_name}, #{song_url})
     </insert>
 
     <select id="allMp3Data" resultMap="entityResultMap">
         SELECT file_name, song_name FROM mp3
     </select>
-
-    <insert id="mp3logInsert">
-        INSERT INTO mp3_play_log
-        (file_name, song_name)
-        VALUES
-        (#{file_name}, #{song_name})
-    </insert>
 </mapper>

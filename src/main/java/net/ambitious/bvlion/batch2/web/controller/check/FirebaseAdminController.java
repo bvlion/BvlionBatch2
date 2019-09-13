@@ -1,4 +1,4 @@
-package net.ambitious.bvlion.batch2.web.controller;
+package net.ambitious.bvlion.batch2.web.controller.check;
 
 import com.google.firebase.database.*;
 import lombok.RequiredArgsConstructor;

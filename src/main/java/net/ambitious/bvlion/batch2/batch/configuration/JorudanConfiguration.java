@@ -5,12 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.entity.JorudanDataEntity;
 import net.ambitious.bvlion.batch2.entity.TwitterChannelsDataEntity;
+import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.mapper.JorudanDataMapper;
 import net.ambitious.bvlion.batch2.mapper.TwitterChannelsMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
-import net.ambitious.bvlion.batch2.util.ProjectControllerAdvice;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -73,6 +73,9 @@ public class JorudanConfiguration {
 	@NonNull
 	private final TwitterChannelsMapper twitterChannelsMapper;
 
+	@NonNull
+	private final ExecTimeMapper execTimeMapper;
+
 	@Scheduled(fixedDelay = 20 * 1000)
 	public void check() {
 		this.twitterChannelsMapper.selectEnableChannels(1).forEach(entity -> {
@@ -89,7 +92,7 @@ public class JorudanConfiguration {
 					return;
 				}
 				final var message = "BatchでExceptionが発生したようです。";
-				AccessUtil.exceptionPost(message, log, ProjectControllerAdvice.class, e, appParams);
+				AccessUtil.exceptionPost(message, log, getClass(), e, appParams);
 			}
 		});
 	}
@@ -161,7 +164,7 @@ public class JorudanConfiguration {
 				return null;
 			}
 
-			if (AccessUtil.isExecTime(appParams, isHoliday)) {
+			if (AccessUtil.isExecTime(isHoliday, execTimeMapper.selectExecTimes())) {
 				var details = item.getDetail().split("〕");
 				var section = details[0]
 						.substring(1)

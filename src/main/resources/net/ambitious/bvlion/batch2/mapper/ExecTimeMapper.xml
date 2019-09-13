@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.ExecTimeMapper">
+
+	<resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.ExecTimeEntity">
+		<result property="type" column="type" />
+		<result property="hours" column="hours" />
+		<result property="minutes" column="minutes" />
+	</resultMap>
+
+	<select id="selectExecTimes" resultMap="entityResultMap">
+		SELECT type, hours, minutes FROM exec_time
+	</select>
+</mapper>

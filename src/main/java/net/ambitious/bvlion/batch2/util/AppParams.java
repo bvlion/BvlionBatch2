@@ -17,4 +17,8 @@ public class AppParams {
 	private String slackToken;
 	private String googleCalendarKey;
 	private String googleHomeNotifierUrl;
+	private String allowUserAgent;
+	private String mp3format;
+	private String iftttProxyToken;
+	private String iftttYoutubeToken;
 }

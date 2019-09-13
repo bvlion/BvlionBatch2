@@ -2,9 +2,9 @@ package net.ambitious.bvlion.batch2.util;
 
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
+import net.ambitious.bvlion.batch2.enums.ExecTimeEnum;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.client.fluent.Request;
-import org.apache.http.client.fluent.Response;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -27,21 +27,16 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class AccessUtil {
 
-	public static final String HOST = "http://localhost:9005";
-
 	private static final String E2K_URL = "https://www.sljfaq.org/cgi/e2k.cgi?o=json&word=%s";
 
-	public static final String SPRING_ICON = "https://www.ambitious-i.net/img/article_main.png";
+	static final String SPRING_ICON = "https://www.ambitious-i.net/img/article_main.png";
 
-	public static final List<TrustManager> TM = Collections.unmodifiableList(Collections.singletonList(
+	private static final List<TrustManager> TM = Collections.unmodifiableList(Collections.singletonList(
 			new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
 					return null;
@@ -102,21 +97,6 @@ public class AccessUtil {
 				log = LoggerFactory.getLogger(AccessUtil.class);
 			}
 			log.error(clazz.getName() + " Access Error", e);
-		}
-	}
-
-	public static void accessPut(String url, Logger log, Class<?> clazz) {
-		var request = Request.Put(HOST.concat(url));
-		Response res = null;
-		try {
-			res = request.execute();
-			log.info(request + " ->\n" + new String(res.returnContent().asBytes(), StandardCharsets.UTF_8));
-		} catch (IOException e) {
-			log.error(clazz.getName() + " Access Error", e);
-		} finally {
-			if (res != null) {
-				res.discardContent();
-			}
 		}
 	}
 
@@ -218,8 +198,7 @@ public class AccessUtil {
 		return getNextDate("yyyy/MM/dd");
 	}
 
-	public static void exceptionPost(String message, Logger log, Class<?> clazz,
-									 Exception exception, AppParams appParams) {
+	public static void exceptionPost(String message, Logger log, Class<?> clazz, Exception exception, AppParams appParams) {
 		postGoogleHome(message, log, clazz, appParams);
 
 		try {
@@ -251,35 +230,27 @@ public class AccessUtil {
 		return bout.toByteArray();
 	}
 
-	/**
-	 * 実行する所定の時間かを返す
-	 * @param appParams AppParams
-	 * @return 所定の時間である
-	 * @throws IOException ファイル読み込みミス
-	 */
-	public static boolean isExecTime(AppParams appParams, boolean isHoliday) throws IOException {
-		// TODO DBに変更
-//		List<String> lines = Files.readAllLines(Paths.get(appParams.getExecTimeFilePath()), StandardCharsets.UTF_8);
-//		String[] startTimes = lines.get(0).split(":");
-//		String[] endTimes = lines.get(1).split(":");
-//
-//		Calendar cal = Calendar.getInstance();
-//
-//		Calendar startTime = new GregorianCalendar(
-//				cal.get(Calendar.YEAR),
-//				cal.get(Calendar.MONTH),
-//				cal.get(Calendar.DATE),
-//				NumberUtils.toInt(startTimes[0]),
-//				NumberUtils.toInt(startTimes[1]));
-//		Calendar endTime = new GregorianCalendar(
-//				cal.get(Calendar.YEAR),
-//				cal.get(Calendar.MONTH),
-//				cal.get(Calendar.DATE),
-//				NumberUtils.toInt(endTimes[0]),
-//				NumberUtils.toInt(endTimes[1]));
-//
-//		return !isHoliday && cal.after(startTime) && cal.before(endTime);
-		return true;
+	public static boolean isExecTime(boolean isHoliday, List<ExecTimeEntity> execTimes) {
+		Calendar cal = Calendar.getInstance();
+
+		Calendar startTime = getTargetTime(ExecTimeEnum.FROM, execTimes);
+		Calendar endTime = getTargetTime(ExecTimeEnum.TO, execTimes);
+
+		return !isHoliday && cal.after(startTime) && cal.before(endTime);
+	}
+	private static Calendar getTargetTime(ExecTimeEnum execTimeEnum, List<ExecTimeEntity> execTimes) {
+		Calendar cal = Calendar.getInstance();
+		return execTimes.stream()
+				.filter(value -> value.getType() == execTimeEnum.getType())
+				.map(value ->
+						new GregorianCalendar(
+								cal.get(Calendar.YEAR),
+								cal.get(Calendar.MONTH),
+								cal.get(Calendar.DATE),
+								value.getHours(),
+								value.getMinutes()
+						)
+				).findFirst().orElse(new GregorianCalendar());
 	}
 
 	public static void sendFcm(String message, AppParams appParams, Logger log) {

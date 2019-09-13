@@ -21,4 +21,8 @@
     <select id="otherFcmTokens" resultType="string">
         SELECT fcm_id FROM users WHERE user_name != #{user} AND user_name != 'test'
     </select>
+
+    <select id="allUsers" resultType="string">
+        SELECT user_name FROM users WHERE user_name != 'test'
+    </select>
 </mapper>

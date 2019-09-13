@@ -1,4 +1,4 @@
-package net.ambitious.bvlion.batch2.web.controller;
+package net.ambitious.bvlion.batch2.web.controller.check;
 
 import com.google.firebase.database.*;
 import lombok.NonNull;
@@ -65,16 +65,7 @@ public class UserDataController {
 		}
 
 		if (cameraMode > -1) {
-			final var cameraModeValue = cameraMode;
-			ref.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot snapshot) {
-					ref.setValueAsync(cameraModeValue);
-				}
-
-				@Override
-				public void onCancelled(DatabaseError error) { }
-			});
+			ref.setValueAsync(cameraMode);
 			this.realtimeSettingMapper.updateMonitoringMode(cameraMode);
 
 			AccessUtil.sendFcm(

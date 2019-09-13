@@ -92,17 +92,7 @@ public class TimerConfiguration {
 	}
 
 	private ItemWriter<String> writer() {
-		return items -> items.forEach(cmd ->
-			ref.addListenerForSingleValueEvent(new ValueEventListener() {
-				@Override
-				public void onDataChange(DataSnapshot snapshot) {
-					ref.setValueAsync(cmd);
-				}
-
-				@Override
-				public void onCancelled(DatabaseError error) { }
-			})
-		);
+		return items -> items.forEach(ref::setValueAsync);
 	}
 
 	private ItemProcessor<TimerEntity, String> processor() {
