@@ -1,11 +1,18 @@
-version: '2'
+version: '3.3'
 services:
   db:
     build: ./docker_db
+    image: mysql:5.5.62
+    restart: always
     environment:
-      TZ: "Asia/Tokyo"
-      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
-    volumes:
-      - ./docker_db/init:/docker-entrypoint-initdb.d
+      TZ: Asia/Tokyo
+      MYSQL_DATABASE: batch
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
     ports:
       - "3326:3306"
+    volumes:
+      - ./docker_db/init:/docker-entrypoint-initdb.d
+      - ./docker_db/conf:/etc/mysql
+      - ./log/mysql:/var/log/mysql

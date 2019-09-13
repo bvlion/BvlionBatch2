@@ -3,6 +3,7 @@ package net.ambitious.bvlion.batch2.batch.configuration;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
 import net.ambitious.bvlion.batch2.entity.JorudanDataEntity;
 import net.ambitious.bvlion.batch2.entity.TwitterChannelsDataEntity;
 import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
@@ -134,7 +135,12 @@ public class JorudanConfiguration {
 	}
 
 	private ItemProcessor<JorudanDataEntity, JorudanDataEntity> processor(TwitterChannelsDataEntity entity) {
-		return new JorudanItemProcessor(this.mapper.jorudanDataSelect(), entity, holidayMapper.isHoliday());
+		return new JorudanItemProcessor(
+				this.mapper.jorudanDataSelect(),
+				entity,
+				holidayMapper.isHoliday(),
+				execTimeMapper.selectExecTimes()
+		);
 	}
 
 	private class JorudanItemProcessor implements ItemProcessor<JorudanDataEntity, JorudanDataEntity> {
@@ -143,12 +149,20 @@ public class JorudanConfiguration {
 
 		private TwitterChannelsDataEntity entity;
 
+		private List<ExecTimeEntity> execTimes;
+
 		private boolean isHoliday;
 
-		private JorudanItemProcessor(List<JorudanDataEntity> entityList, TwitterChannelsDataEntity entity, boolean isHoliday) {
+		private JorudanItemProcessor(
+				List<JorudanDataEntity> entityList,
+				TwitterChannelsDataEntity entity,
+				boolean isHoliday,
+				List<ExecTimeEntity> execTimes
+		) {
 			this.entity = entity;
 			this.isHoliday = isHoliday;
 			this.entityList = entityList;
+			this.execTimes = execTimes;
 		}
 
 		@Override
@@ -164,7 +178,7 @@ public class JorudanConfiguration {
 				return null;
 			}
 
-			if (AccessUtil.isExecTime(isHoliday, execTimeMapper.selectExecTimes())) {
+			if (AccessUtil.isExecTime(isHoliday, execTimes)) {
 				var details = item.getDetail().split("〕");
 				var section = details[0]
 						.substring(1)
