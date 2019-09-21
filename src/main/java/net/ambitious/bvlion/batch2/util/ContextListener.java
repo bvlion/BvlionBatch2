@@ -45,7 +45,7 @@ public class ContextListener implements ServletContextListener {
 					"バッチが起動しました。",
 					AccessUtil.SPRING_ICON
 			).send(appParams);
-			AccessUtil.postGoogleHome("バッチが起動しました。", log, ContextListener.class, appParams);
+			AccessUtil.postGoogleHome("バッチが起動しました。", log, appParams);
 		} catch (IOException e) {
 			log.warn("Slack Post Error", e);
 		}

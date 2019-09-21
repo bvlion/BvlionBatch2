@@ -2,9 +2,12 @@ package net.ambitious.bvlion.batch2.util;
 
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
 import net.ambitious.bvlion.batch2.enums.ExecTimeEnum;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
@@ -50,32 +53,14 @@ public class AccessUtil {
 			}
 	));
 
-	public static void postGoogleHome(String message, Logger log, Class<?> clazz, AppParams appParams) {
+	public static void postGoogleHome(String message, Logger log, AppParams appParams) {
 		if (!appParams.isProduction()) {
 			log.info(message + ":OK");
 			return;
 		}
-		try {
-			var url = new URL(appParams.getGoogleHomeNotifierUrl());
-			var con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("POST");
-			con.setUseCaches(false);
-			con.setDoInput(true);
-			con.setDoOutput(true);
-
-			try (var wr = new DataOutputStream(con.getOutputStream())) {
-				var bytes = ("text=" + message).getBytes(StandardCharsets.UTF_8);
-				for (var textByte : bytes) {
-					wr.writeByte(textByte);
-				}
-			}
-
-			try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-				log.info(br.lines().collect(Collectors.joining("\n")));
-			}
-		} catch (IOException e) {
-			log.error(clazz.getName() + " Access Error", e);
-		}
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference ref = database.getReference("notifier");
+		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance()));
 	}
 
 	public static void accessGet(String accessUrl, Logger log, Class<?> clazz) {
@@ -198,8 +183,8 @@ public class AccessUtil {
 		return getNextDate("yyyy/MM/dd");
 	}
 
-	public static void exceptionPost(String message, Logger log, Class<?> clazz, Exception exception, AppParams appParams) {
-		postGoogleHome(message, log, clazz, appParams);
+	public static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
+		postGoogleHome(message, log, appParams);
 
 		try {
 			new SlackHttpPost(

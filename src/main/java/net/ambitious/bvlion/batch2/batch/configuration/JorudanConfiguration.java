@@ -93,7 +93,7 @@ public class JorudanConfiguration {
 					return;
 				}
 				final var message = "BatchでExceptionが発生したようです。";
-				AccessUtil.exceptionPost(message, log, getClass(), e, appParams);
+				AccessUtil.exceptionPost(message, log, e, appParams);
 			}
 		});
 	}
@@ -188,7 +188,7 @@ public class JorudanConfiguration {
 			var state = details[1].split("／")[0];
 			var googleHomeMessage = entity.getSearchValue() + "の" + section + "で"
 						+ (state.equals("止まってる") ? state : state + "の") + "ようです。";
-				AccessUtil.postGoogleHome(googleHomeMessage, log, JorudanConfiguration.class, appParams);
+				AccessUtil.postGoogleHome(googleHomeMessage, log, appParams);
 			}
 
 			var message = new StringBuilder();

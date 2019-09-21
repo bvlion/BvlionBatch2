@@ -57,7 +57,6 @@ public class TimeNotificationConfiguration {
 				AccessUtil.postGoogleHome(
 						"時刻は" + AccessUtil.getNow("H:mm") + "になりました。",
 						log,
-						TimeNotificationConfiguration.class,
 						appParams
 				);
 			}
@@ -105,7 +104,6 @@ public class TimeNotificationConfiguration {
 					AccessUtil.postGoogleHome(
 							message,
 							log,
-							TimeNotificationConfiguration.class,
 							appParams
 					);
 					new SlackHttpPost(
@@ -139,7 +137,6 @@ public class TimeNotificationConfiguration {
 						AccessUtil.postGoogleHome(
 								message,
 								log,
-								TimeNotificationConfiguration.class,
 								appParams
 						);
 						new SlackHttpPost(
@@ -163,7 +160,6 @@ public class TimeNotificationConfiguration {
 				AccessUtil.postGoogleHome(
 						"おはようございます。検温は済んでいますか？",
 						log,
-						TimeNotificationConfiguration.class,
 						appParams
 				);
 			}

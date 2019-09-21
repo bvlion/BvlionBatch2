@@ -86,7 +86,7 @@ public class WeatherNotificationTasklet implements Tasklet {
 						+ "風は" + wind[0] + "に毎時" + wind[1] + "kmで吹き、"
 						+ "体感気温は" + realFeel + "となる見込みです。"
 						+ "ザックリ言うと、" + comment.replace("所", "ところ") + "、という感じです。";
-				AccessUtil.postGoogleHome(googleHomeMessage, log, WeatherNotificationConfiguration.class, appParams);
+				AccessUtil.postGoogleHome(googleHomeMessage, log, appParams);
 			} catch (IOException e) {
 				log.warn("WeatherNotificationConfiguration Error", e);
 			}

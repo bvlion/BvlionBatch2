@@ -64,12 +64,12 @@ public class IftttWebhookController {
 			message = String.format(appParams.getMp3format(), entity.getFileName());
 		}
 
-		AccessUtil.postGoogleHome(message, log, IftttWebhookController.class, appParams);
+		AccessUtil.postGoogleHome(message, log, appParams);
 	}
 
 	@RequestMapping(value = "/speak-text", method = RequestMethod.PUT)
 	public String speakTextWebHook(@RequestParam("text") String text)  {
-		AccessUtil.postGoogleHome(text, log, IftttWebhookController.class, appParams);
+		AccessUtil.postGoogleHome(text, log, appParams);
 		return "{}";
 	}
 
