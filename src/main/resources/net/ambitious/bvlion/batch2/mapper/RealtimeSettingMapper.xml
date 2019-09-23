@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.RealtimeSettingMapper">
+
+    <resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.RealtimeSettingEntity">
+        <result property="displayNumber" column="disp_number" />
+        <result property="startedFlag" column="started_flag" />
+        <result property="temperature" column="temperature" />
+        <result property="monitoringCameraStarted" column="monitoring_camera_started_flag" />
+    </resultMap>
+
+    <select id="selectRealtimeSetting" resultMap="entityResultMap">
+        SELECT
+          disp_number,
+          started_flag,
+          temperature,
+          monitoring_camera_started_flag
+        FROM
+          realtime_setting
+        ORDER BY
+          disp_number DESC
+        LIMIT 1
+    </select>
+
+    <update id="updateAirconMode">
+        UPDATE realtime_setting, (SELECT MAX(disp_number) dsp_num FROM realtime_setting) max_data SET
+        started_flag = #{mode},
+        temperature = #{temp}
+        WHERE disp_number = max_data.dsp_num
+    </update>
+
+    <update id="updateMonitoringMode">
+        UPDATE realtime_setting, (SELECT MAX(disp_number) dsp_num FROM realtime_setting) max_data SET
+        monitoring_camera_started_flag = #{mode}
+        WHERE disp_number = max_data.dsp_num
+    </update>
+</mapper>

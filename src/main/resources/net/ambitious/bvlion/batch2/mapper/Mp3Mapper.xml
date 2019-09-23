@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.Mp3Mapper">
+
+    <resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.Mp3Entity">
+        <result property="fileName" column="file_name" />
+        <result property="songName" column="song_name" />
+    </resultMap>
+
+    <select id="hasSongName" resultType="boolean">
+        SELECT COUNT(*) FROM mp3 WHERE song_name = #{song_name}
+    </select>
+
+    <select id="nextFileName" resultType="int">
+        SELECT CASE WHEN (SELECT COUNT(*) FROM mp3) = 0 THEN 1 ELSE MAX(file_name) + 1 END FROM mp3
+    </select>
+
+    <insert id="mp3insert">
+        INSERT INTO mp3
+        (file_name, song_name, song_url)
+        VALUES
+        (#{file_name}, #{song_name}, #{song_url})
+    </insert>
+
+    <select id="allMp3Data" resultMap="entityResultMap">
+        SELECT file_name, song_name FROM mp3
+    </select>
+</mapper>

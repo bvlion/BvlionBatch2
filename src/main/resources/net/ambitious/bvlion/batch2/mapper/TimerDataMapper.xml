@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.TimerDataMapper">
+
+    <resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.TimerEntity">
+        <result property="dispNumber" column="disp_number" />
+        <result property="behaviorType" column="behavior_type" />
+        <result property="airconType" column="aircon_type" />
+        <result property="temperature" column="temperature" />
+        <result property="monStarted" column="mon_started_flag" />
+        <result property="tueStarted" column="tue_started_flag" />
+        <result property="wedStarted" column="wed_started_flag" />
+        <result property="thuStarted" column="thu_started_flag" />
+        <result property="friStarted" column="fri_started_flag" />
+        <result property="satStarted" column="sat_started_flag" />
+        <result property="sunStarted" column="sun_started_flag" />
+        <result property="holidayDecision" column="holiday_decision_flag" />
+        <result property="enable" column="enable_flag" />
+        <result property="doExecTime" column="do_exec_time" />
+    </resultMap>
+
+    <select id="selectExecTimerSetting" resultMap="entityResultMap">
+        SELECT
+          disp_number,
+          behavior_type,
+          aircon_type,
+          temperature,
+          mon_started_flag,
+          tue_started_flag,
+          wed_started_flag,
+          thu_started_flag,
+          fri_started_flag,
+          sat_started_flag,
+          sun_started_flag,
+          holiday_decision_flag,
+          enable_flag,
+          do_exec_time
+        FROM
+          timer_data
+        WHERE
+            do_exec_time = #{do_exec_time}
+        AND ${exec_started_flag} = 1
+        AND enable_flag = 1
+    </select>
+</mapper>
