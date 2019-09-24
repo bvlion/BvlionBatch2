@@ -3,6 +3,7 @@ package net.ambitious.bvlion.batch2.entity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import net.ambitious.bvlion.batch2.util.AccessUtil;
 import org.apache.commons.lang3.time.DateUtils;
 
 import java.text.ParseException;
@@ -16,7 +17,7 @@ public class JorudanDataEntity {
     public JorudanDataEntity(String line) {
         var lines = line.split(" ");
 
-        var date = Calendar.getInstance().get(Calendar.YEAR) + "/" + lines[1].substring(1)
+        var date = Calendar.getInstance(AccessUtil.TOKYO).get(Calendar.YEAR) + "/" + lines[1].substring(1)
                 + " " + lines[2].substring(0, lines[2].length() - 1) + ":00";
 
         try {

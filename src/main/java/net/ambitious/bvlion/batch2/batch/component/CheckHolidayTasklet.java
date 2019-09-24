@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
-import java.util.TimeZone;
 
 @Slf4j
 @Component
@@ -64,7 +63,7 @@ public class CheckHolidayTasklet implements Tasklet {
 			}
 		}
 
-		var cal = Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
+		var cal = Calendar.getInstance(AccessUtil.TOKYO);
 		cal.add(Calendar.DATE, 1);
 
 		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {

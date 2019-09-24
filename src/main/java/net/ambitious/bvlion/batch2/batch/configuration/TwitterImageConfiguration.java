@@ -145,7 +145,7 @@ public class TwitterImageConfiguration {
 				new SlackBinaryPost.Builder()
 						.channels(this.twitterImageEnum.getSlackChannel())
 						.title(item.getText())
-						.fileName(FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance()) + ".png")
+						.fileName(FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance(AccessUtil.TOKYO)) + ".png")
 						.fileData(AccessUtil.getBinaryBytes(item.getMediaUrl()))
 						.build(appParams.getSlackToken()).post(appParams);
 			}

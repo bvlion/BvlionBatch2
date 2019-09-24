@@ -40,6 +40,8 @@ public class AccessUtil {
 
 	static final String SPRING_ICON = "https://www.ambitious-i.net/img/article_main.png";
 
+	public static final TimeZone TOKYO = TimeZone.getTimeZone("Asia/Tokyo");
+
 	private static final List<TrustManager> TM = Collections.unmodifiableList(Collections.singletonList(
 			new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
@@ -61,7 +63,7 @@ public class AccessUtil {
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance()));
+		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance(AccessUtil.TOKYO)));
 	}
 
 	public static void accessGet(String accessUrl, Logger log, Class<?> clazz) {
@@ -168,7 +170,7 @@ public class AccessUtil {
 	}
 
 	public static String getNextDate(String format, int addDate) {
-		var calendar = Calendar.getInstance(TimeZone.getTimeZone("Asia/Tokyo"));
+		var calendar = Calendar.getInstance(AccessUtil.TOKYO);
 		calendar.add(Calendar.DATE, addDate);
 		return DateTimeFormatter.ofPattern(format).format(
 				LocalDateTime.ofInstant(calendar.toInstant(),
@@ -226,7 +228,7 @@ public class AccessUtil {
 	}
 
 	public static boolean isExecTime(boolean isHoliday, List<ExecTimeEntity> execTimes) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
 
 		Calendar startTime = getTargetTime(ExecTimeEnum.FROM, execTimes);
 		Calendar endTime = getTargetTime(ExecTimeEnum.TO, execTimes);
@@ -234,7 +236,7 @@ public class AccessUtil {
 		return !isHoliday && cal.after(startTime) && cal.before(endTime);
 	}
 	private static Calendar getTargetTime(ExecTimeEnum execTimeEnum, List<ExecTimeEntity> execTimes) {
-		Calendar cal = Calendar.getInstance();
+		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
 		return execTimes.stream()
 				.filter(value -> value.getType() == execTimeEnum.getType())
 				.map(value ->

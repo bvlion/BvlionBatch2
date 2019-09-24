@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -34,7 +33,7 @@ public class DatingTasklet implements Tasklet {
 
 	@Override
 	public RepeatStatus execute(StepContribution contribution, ChunkContext chunkContext) {
-		var now = Calendar.getInstance();
+		var now = Calendar.getInstance(AccessUtil.TOKYO);
 
 		var message = this.datingMapper.allDatings().stream()
 				.map(value -> {
@@ -51,7 +50,7 @@ public class DatingTasklet implements Tasklet {
 							log.debug(value.getTargetDate(), e);
 						}
 					} else {
-						if (FastDateFormat.getInstance("MMdd").format(new Date()).equals(value.getTargetDate())) {
+						if (FastDateFormat.getInstance("MMdd").format(Calendar.getInstance(AccessUtil.TOKYO)).equals(value.getTargetDate())) {
 							return value.getMessage();
 						}
 					}

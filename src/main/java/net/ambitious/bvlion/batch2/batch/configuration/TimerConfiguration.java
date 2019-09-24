@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.entity.TimerEntity;
 import net.ambitious.bvlion.batch2.enums.TimerDateEnum;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
+import net.ambitious.bvlion.batch2.util.AccessUtil;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.batch.MyBatisCursorItemReader;
@@ -77,7 +78,7 @@ public class TimerConfiguration {
 	}
 
 	private ItemReader<TimerEntity> reader() {
-		var cal = Calendar.getInstance();
+		var cal = Calendar.getInstance(AccessUtil.TOKYO);
 
 		var parameterValues = new HashMap<String, Object>();
 		parameterValues.put("do_exec_time", FastDateFormat.getInstance("HHmm").format(cal) + "00");
