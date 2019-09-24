@@ -233,6 +233,9 @@ public class AccessUtil {
 		Calendar startTime = getTargetTime(ExecTimeEnum.FROM, execTimes);
 		Calendar endTime = getTargetTime(ExecTimeEnum.TO, execTimes);
 
+		System.out.println("startTime:" + startTime);
+		System.out.println("endTime:" + endTime);
+
 		return !isHoliday && cal.after(startTime) && cal.before(endTime);
 	}
 	private static Calendar getTargetTime(ExecTimeEnum execTimeEnum, List<ExecTimeEntity> execTimes) {

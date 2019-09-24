@@ -46,6 +46,8 @@ public class IftttWebhookController {
 	@Transactional
 	@RequestMapping(value = "/holiday-setting/{holidayType}", method = RequestMethod.PUT)
 	public String holidaySetting(@PathVariable int holidayType)  {
+		var setDate = AccessUtil.getNextDate("yyyy-MM-dd");
+
 		var cal = Calendar.getInstance(AccessUtil.TOKYO);
 		cal.add(Calendar.DATE, 1);
 
@@ -54,9 +56,9 @@ public class IftttWebhookController {
 		}
 
 		if (!holidayMapper.isSetHoliday()) {
-			holidayMapper.setHoliday(AccessUtil.getNextDate("yyyy-MM-dd"), holidayType);
+			holidayMapper.setHoliday(setDate, holidayType);
 		}
-		return "{}";
+		return "Set Holiday " + setDate + " to " + holidayType;
 	}
 
 	@RequestMapping(value = "/play-music", method = RequestMethod.PUT)
