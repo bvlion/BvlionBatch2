@@ -242,15 +242,12 @@ public class AccessUtil {
 		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
 		return execTimes.stream()
 				.filter(value -> value.getType() == execTimeEnum.getType())
-				.map(value ->
-						new GregorianCalendar(
-								cal.get(Calendar.YEAR),
-								cal.get(Calendar.MONTH),
-								cal.get(Calendar.DATE),
-								value.getHours(),
-								value.getMinutes()
-						)
-				).findFirst().orElse(new GregorianCalendar());
+				.map(value -> {
+					cal.set(Calendar.HOUR_OF_DAY, value.getHours());
+					cal.set(Calendar.MINUTE, value.getMinutes());
+					return cal;
+				}
+				).findFirst().orElse(cal);
 	}
 
 	public static void sendFcm(String message, AppParams appParams, Logger log) {
