@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -41,6 +42,22 @@ public class IftttWebhookController {
 
 	private final FirebaseDatabase database = FirebaseDatabase.getInstance();
 	private final DatabaseReference ref = database.getReference("mp3");
+
+	@Transactional
+	@RequestMapping(value = "/holiday-setting/{holidayType}", method = RequestMethod.PUT)
+	public String holidaySetting(@PathVariable int holidayType)  {
+		var cal = Calendar.getInstance(AccessUtil.TOKYO);
+		cal.add(Calendar.DATE, 1);
+
+		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			holidayType = 1;
+		}
+
+		if (!holidayMapper.isSetHoliday()) {
+			holidayMapper.setHoliday(AccessUtil.getNextDate("yyyy-MM-dd"), holidayType);
+		}
+		return "{}";
+	}
 
 	@RequestMapping(value = "/play-music", method = RequestMethod.PUT)
 	public void playMusicWebhook(@RequestBody Map<String, String> postData)  {

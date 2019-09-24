@@ -15,7 +15,6 @@ public class AppParams {
 	private String slackWebhookUrl;
 	private boolean production;
 	private String slackToken;
-	private String googleCalendarKey;
 	private String allowUserAgent;
 	private String mp3format;
 	private String iftttProxyToken;
