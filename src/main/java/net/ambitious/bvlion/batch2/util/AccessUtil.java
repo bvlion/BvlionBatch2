@@ -4,6 +4,7 @@ package net.ambitious.bvlion.batch2.util;
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.jcraft.jsch.JSchException;
 import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
 import net.ambitious.bvlion.batch2.enums.ExecTimeEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -198,6 +199,15 @@ public class AccessUtil {
 		}
 
 		log.error(message, exception);
+
+		if (appParams.isProduction()) {
+			try {
+				SSHConnection.getInstance().reConnectSSH();
+				log.info("SSH ReConnect");
+			} catch (JSchException e) {
+				log.error("SSH ReConnect Error", e);
+			}
+		}
 	}
 
 	public static byte[] getBinaryBytes(String binaryUrl) throws IOException {

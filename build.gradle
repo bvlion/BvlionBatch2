@@ -35,6 +35,7 @@ dependencies {
 	implementation 'org.jsoup:jsoup:1.11.2'
 	implementation 'com.google.api-client:google-api-client:1.25.0'
 	implementation 'com.google.firebase:firebase-admin:6.10.0'
+	implementation 'com.jcraft:jsch:0.1.54'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.springframework.batch:spring-batch-test'
 }

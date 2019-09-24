@@ -20,4 +20,12 @@ public class AppParams {
 	private String mp3format;
 	private String iftttProxyToken;
 	private String iftttYoutubeToken;
+
+	private String sshUser;
+	private String sshRemoteServer;
+	private int sshRemotePort;
+	private String sPassPhrase;
+	private String mysqlRemoteServer;
+	private String rsaKeyPath;
+	private String knownHostsPath;
 }
