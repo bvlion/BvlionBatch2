@@ -4,7 +4,6 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.enums.HolidayEnum;
-import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
@@ -47,44 +46,6 @@ public class TimeNotificationConfiguration {
 
 	@NonNull
 	private final HolidayMapper holidayMapper;
-
-	@NonNull
-	private final ExecTimeMapper execTimeMapper;
-
-	private Step step() {
-		return this.stepBuilderFactory.get("TimeNotificationStep").tasklet((contribution, chunkContext) -> {
-			if (AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes())) {
-				AccessUtil.postGoogleHome(
-						"時刻は" + AccessUtil.getNow("H:mm") + "になりました。",
-						log,
-						appParams
-				);
-			}
-			return RepeatStatus.FINISHED;
-		}).build();
-	}
-
-	private Job job() {
-		return this.jobBuilderFactory.get("TimeNotificationJob").start(step()).build();
-	}
-
-	@Scheduled(cron = "${scheduler.time.cron1}", zone = "Asia/Tokyo")
-	public void check() throws JobExecutionAlreadyRunningException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		this.jobLauncher.run(job(), new JobParameters(
-				Stream.of(new JobParameter(new Date()))
-						.collect(Collectors.toMap(d -> "exec_date1", d -> d)))
-		);
-	}
-
-	@Scheduled(cron = "${scheduler.time.cron2}", zone = "Asia/Tokyo")
-	public void special() throws JobExecutionAlreadyRunningException, JobRestartException,
-			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
-		this.jobLauncher.run(job(), new JobParameters(
-				Stream.of(new JobParameter(new Date()))
-						.collect(Collectors.toMap(d -> "exec_date2", d -> d)))
-		);
-	}
 
 	@Scheduled(cron = "${scheduler.time.cron3}", zone = "Asia/Tokyo")
 	public void temperatureDetection() throws JobExecutionAlreadyRunningException, JobRestartException,

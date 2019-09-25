@@ -228,15 +228,23 @@ public class AccessUtil {
 	}
 
 	public static boolean isExecTime(boolean isHoliday, List<ExecTimeEntity> execTimes) {
+		if (isHoliday) {
+			return false;
+		}
+
 		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
 
-		Calendar startTime = getTargetTime(ExecTimeEnum.FROM, execTimes);
-		Calendar endTime = getTargetTime(ExecTimeEnum.TO, execTimes);
+		Calendar start1Time = getTargetTime(ExecTimeEnum.FROM1, execTimes);
+		Calendar end1Time = getTargetTime(ExecTimeEnum.TO1, execTimes);
 
-		System.out.println("startTime:" + startTime);
-		System.out.println("endTime:" + endTime);
+		if (cal.after(start1Time) && cal.before(end1Time)) {
+			return true;
+		}
 
-		return !isHoliday && cal.after(startTime) && cal.before(endTime);
+		Calendar start5Time = getTargetTime(ExecTimeEnum.FROM5, execTimes);
+		Calendar end5Time = getTargetTime(ExecTimeEnum.TO5, execTimes);
+
+		return cal.after(start5Time) && cal.before(end5Time) && cal.get(Calendar.MINUTE) % 5 == 0;
 	}
 	private static Calendar getTargetTime(ExecTimeEnum execTimeEnum, List<ExecTimeEntity> execTimes) {
 		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);

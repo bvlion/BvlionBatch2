@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.entity.Mp3Entity;
+import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.mapper.Mp3Mapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
@@ -40,6 +41,9 @@ public class IftttWebhookController {
 	@NonNull
 	private final UserMapper userMapper;
 
+	@NonNull
+	private final ExecTimeMapper execTimeMapper;
+
 	private final FirebaseDatabase database = FirebaseDatabase.getInstance();
 	private final DatabaseReference ref = database.getReference("mp3");
 
@@ -59,6 +63,11 @@ public class IftttWebhookController {
 			holidayMapper.setHoliday(setDate, holidayType);
 		}
 		return "Set Holiday " + setDate + " to " + holidayType;
+	}
+
+	@RequestMapping(value = "/is/time-notification", method = RequestMethod.GET)
+	public int isTimeNotification()  {
+		return AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes()) ? 1 : 0;
 	}
 
 	@RequestMapping(value = "/play-music", method = RequestMethod.PUT)

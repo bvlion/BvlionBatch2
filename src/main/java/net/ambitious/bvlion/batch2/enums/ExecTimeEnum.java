@@ -6,8 +6,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Getter
 public enum ExecTimeEnum {
-	FROM(1),
-	TO(2);
+	FROM5(1),
+	TO5(2),
+	FROM1(3),
+	TO1(4);
 
 	private final int type;
 }
