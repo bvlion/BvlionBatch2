@@ -7,7 +7,7 @@
 		<result property="message" column="message" />
 	</resultMap>
 
-	<select id="selectEnableChannels" resultMap="entityResultMap">
+	<select id="allDatings" resultMap="entityResultMap">
 		SELECT target_date, message FROM dating ORDER BY pk
 	</select>
 </mapper>
