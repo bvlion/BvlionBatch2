@@ -62,7 +62,7 @@ public class TimerConfiguration {
 			JobRestartException, JobInstanceAlreadyCompleteException {
 		this.jobLauncher.run(job(), new JobParameters(
 				Stream.of(new JobParameter(new Date()))
-						.collect(Collectors.toMap(d -> "exec_date", d -> d)))
+						.collect(Collectors.toMap(d -> "exec_date_timer", d -> d)))
 		);
 	}
 

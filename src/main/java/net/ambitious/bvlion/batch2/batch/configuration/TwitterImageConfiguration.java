@@ -69,7 +69,7 @@ public class TwitterImageConfiguration {
 			try {
 				this.jobLauncher.run(job(value), new JobParameters(
 						Stream.of(new JobParameter(new Date()))
-								.collect(Collectors.toMap(d -> "exec_date" + value.getImageType(), d -> d)))
+								.collect(Collectors.toMap(d -> "exec_date_" + value.getImageType(), d -> d)))
 				);
 			} catch (JobExecutionAlreadyRunningException | JobRestartException
 					| JobParametersInvalidException | JobInstanceAlreadyCompleteException e) {
