@@ -14,7 +14,7 @@
 
 	<logger name="net.ambitious.bvlion.batch2.mapper.TimerDataMapper" additivity="false">
 		<level value="DEBUG" />
-		<appender-ref ref="STDOUT" />
+		<appender-ref ref="CONSOLE" />
 	</logger>
 
 	<root level="INFO">
