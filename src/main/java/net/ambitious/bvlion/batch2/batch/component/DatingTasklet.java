@@ -57,7 +57,8 @@ public class DatingTasklet implements Tasklet {
 					return "";
 				}).collect(Collectors.joining("\n"));
 
-		if (message.length() > 0) {
+		if (message.trim().length() > 0) {
+			log.debug("DatingBatch:" + message);
 			AccessUtil.sendFcm(
 					AccessUtil.createTopicMessage("記念日通知", message + "おめでとう(*･ω･)ﾉ", "dating"),
 					appParams,
