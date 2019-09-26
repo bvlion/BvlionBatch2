@@ -63,7 +63,7 @@ public class AccessUtil {
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance(AccessUtil.TOKYO)));
+		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)));
 	}
 
 	public static void accessGet(String accessUrl, Logger log, Class<?> clazz) {

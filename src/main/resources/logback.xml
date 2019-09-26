@@ -12,11 +12,6 @@
 		<appender-ref ref="NOOP" />
 	</logger>
 
-	<logger name="net.ambitious.bvlion.batch2.mapper.TimerDataMapper" additivity="false">
-		<level value="DEBUG" />
-		<appender-ref ref="CONSOLE" />
-	</logger>
-
 	<root level="INFO">
 		<appender-ref ref="CONSOLE" />
 	</root>

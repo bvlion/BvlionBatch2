@@ -203,7 +203,7 @@ public class JorudanConfiguration {
 			new SlackHttpPost(
 					entity.getSlackChannel(),
 					entity.getSearchValue() + "-"
-							+ FastDateFormat.getInstance("MM/dd HH:mm").format(item.getPostedDate()),
+							+ FastDateFormat.getInstance("MM/dd HH:mm", AccessUtil.TOKYO).format(item.getPostedDate()),
 					message.toString(),
 					JORUDAN_ICON
 			).send(appParams);

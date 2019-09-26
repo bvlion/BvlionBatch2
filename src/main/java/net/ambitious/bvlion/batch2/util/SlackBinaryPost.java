@@ -193,7 +193,7 @@ public class SlackBinaryPost {
 				throw new IllegalArgumentException("必要データが登録されていません。");
 			}
 			if (StringUtils.isBlank(this.fileName)) {
-				this.fileName = FastDateFormat.getInstance("yyyyMMddHHmmss").format(Calendar.getInstance(AccessUtil.TOKYO));
+				this.fileName = FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO));
 			}
 			return new SlackBinaryPost(this);
 		}
