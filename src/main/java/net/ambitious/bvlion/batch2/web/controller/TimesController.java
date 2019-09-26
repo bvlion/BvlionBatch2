@@ -105,7 +105,7 @@ public class TimesController {
 		var cal = Calendar.getInstance(AccessUtil.TOKYO);
 		timerDataMapper.selectExecTimerSetting(
 				TimerDateEnum.columnName(cal.get(Calendar.DAY_OF_WEEK)),
-				FastDateFormat.getInstance("HH:mm").format(cal) + ":00"
+				FastDateFormat.getInstance("HH:mm", AccessUtil.TOKYO).format(cal) + ":00"
 		).stream().map(entity -> {
 			if (entity.isHolidayDecision() && holidayMapper.isHoliday()) {
 				return null;

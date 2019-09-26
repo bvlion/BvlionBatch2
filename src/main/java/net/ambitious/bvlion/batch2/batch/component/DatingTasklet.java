@@ -50,7 +50,7 @@ public class DatingTasklet implements Tasklet {
 							log.debug(value.getTargetDate(), e);
 						}
 					} else {
-						if (FastDateFormat.getInstance("MMdd").format(Calendar.getInstance(AccessUtil.TOKYO)).equals(value.getTargetDate())) {
+						if (FastDateFormat.getInstance("MMdd", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)).equals(value.getTargetDate())) {
 							return value.getMessage();
 						}
 					}
