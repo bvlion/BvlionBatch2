@@ -57,7 +57,7 @@ public class UrlAccessConfiguration {
 			JobInstanceAlreadyCompleteException, JobParametersInvalidException {
 		this.jobLauncher.run(job(), new JobParameters(
 				Stream.of(new JobParameter(new Date()))
-						.collect(Collectors.toMap(d -> "exec_date", d -> d)))
+						.collect(Collectors.toMap(d -> "exec_date_url_access", d -> d)))
 		);
 	}
 }
