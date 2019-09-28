@@ -164,13 +164,14 @@ public class IftttWebhookController {
 			@RequestParam("channel_name") String channelName,
 			@RequestParam("user_name") String userName,
 			@RequestParam("text") String text) {
+		log.debug("user_name: {}, text: {}", userName, text);
 
 		if (!channelName.equals("youtube-dl") || !token.equals(appParams.getIftttYoutubeToken())) {
 			log.warn("youtube-dl：固定パラメータなし");
 			return "{}";
 		}
 
-		if (userMapper.allUsers().stream().anyMatch(value -> !value.equals(userName))) {
+		if (userMapper.allUsers().stream().noneMatch(userName::equals)) {
 			return "{}";
 		}
 
