@@ -17,4 +17,6 @@ public interface Mp3Mapper {
 	void mp3insert(@Param("file_name") int fileName, @Param("song_name") String songName, @Param("song_url") String songUrl);
 
 	List<Mp3Entity> allMp3Data();
+
+	String songName(@Param("file_name") int fileName);
 }

@@ -11,6 +11,7 @@ import net.ambitious.bvlion.batch2.mapper.Mp3Mapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
+import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
@@ -155,6 +156,28 @@ public class IftttWebhookController {
 		return "{}";
 	}
 
+	@RequestMapping(value = "/youtube-notification/{fileName}", method = RequestMethod.PUT)
+	public void youtubeNotification(@PathVariable int fileName) {
+	    String songName = mp3Mapper.songName(fileName);
+		try {
+			new SlackHttpPost(
+					"youtube-dl",
+					"おうちサーバー",
+					"『" + songName + "』で登録しました。\\n『登録した " + songName + " 流して』と言ってみてください。",
+					"https://4s.ambitious-i.net/icon/youtube_icon.png")
+					.send(appParams);
+
+			new SlackBinaryPost.Builder()
+					.channels("youtube-dl")
+					.title(songName)
+					.fileName(songName + ".mp3")
+					.fileData(AccessUtil.getBinaryBytes(String.format(appParams.getMp3format(), fileName)))
+					.build(appParams.getSlackToken()).post(appParams);
+		} catch (IOException e) {
+			log.warn("Slack送信エラー", e);
+		}
+	}
+
 	@Transactional
 	@RequestMapping(value = "/youtube-dl",
 			method = RequestMethod.POST,
@@ -164,7 +187,6 @@ public class IftttWebhookController {
 			@RequestParam("channel_name") String channelName,
 			@RequestParam("user_name") String userName,
 			@RequestParam("text") String text) {
-		log.debug("user_name: {}, text: {}", userName, text);
 
 		if (!channelName.equals("youtube-dl") || !token.equals(appParams.getIftttYoutubeToken())) {
 			log.warn("youtube-dl：固定パラメータなし");

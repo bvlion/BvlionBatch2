@@ -25,4 +25,8 @@
     <select id="allMp3Data" resultMap="entityResultMap">
         SELECT file_name, song_name FROM mp3
     </select>
+
+    <select id="songName" resultType="string">
+        SELECT song_name FROM mp3 WHERE file_name = #{file_name}
+    </select>
 </mapper>
