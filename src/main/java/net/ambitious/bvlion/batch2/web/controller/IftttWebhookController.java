@@ -193,6 +193,7 @@ public class IftttWebhookController {
 			return "{}";
 		}
 
+		log.info("user:{}", userName);
 		if (userMapper.allUsers().stream().noneMatch(userName::equals)) {
 			return "{}";
 		}
