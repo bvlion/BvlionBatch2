@@ -26,6 +26,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
 	compileOnly 'org.projectlombok:lombok'
+	compileOnly 'com.newrelic.agent.java:newrelic-java:5.7.0'
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	implementation 'org.twitter4j:twitter4j-core:4.0.+'

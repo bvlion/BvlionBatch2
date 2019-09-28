@@ -30,3 +30,4 @@ out/
 .vscode/
 
 log/mysql/mysqld.log
+logs

@@ -52,7 +52,6 @@ public class ContextListener implements ServletContextListener {
 			ssh.setSshRemoteServer(appParams.getSshRemoteServer());
 			ssh.setMysqlRemoteServer(appParams.getMysqlRemoteServer());
 
-
 			try {
 				ssh.connectSSH();
 			} catch (JSchException e) {
