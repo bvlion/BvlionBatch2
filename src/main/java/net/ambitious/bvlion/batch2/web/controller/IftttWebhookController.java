@@ -193,11 +193,9 @@ public class IftttWebhookController {
 			return "{}";
 		}
 
-		log.info("user:{}", userName);
 		if (userMapper.allUsers().stream().noneMatch(userName::equals)) {
 			return "{}";
 		}
-		userMapper.allUsers().forEach(log::info);
 
 		if (text.equals("list") || text.equals("リスト") || text.equals("一覧")) {
 			return "{\"text\":\""
