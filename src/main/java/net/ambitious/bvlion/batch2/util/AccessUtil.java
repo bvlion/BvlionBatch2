@@ -169,24 +169,16 @@ public class AccessUtil {
 		return DateTimeFormatter.ofPattern(format).format(ZonedDateTime.now(ZoneId.of("Asia/Tokyo")));
 	}
 
-	public static String getNextDate(String format, int addDate) {
+	public static String getNextDate(String format) {
 		var calendar = Calendar.getInstance(AccessUtil.TOKYO);
-		calendar.add(Calendar.DATE, addDate);
+		calendar.add(Calendar.DATE, 1);
 		return DateTimeFormatter.ofPattern(format).format(
 				LocalDateTime.ofInstant(calendar.toInstant(),
 						ZoneId.of("Asia/Tokyo"))
 		);
 	}
 
-	public static String getNextDate(String format) {
-		return getNextDate(format, 1);
-	}
-
-	public static String getNextDate() {
-		return getNextDate("yyyy/MM/dd");
-	}
-
-	public static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
+	static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
 		postGoogleHome(message, log, appParams);
 
 		try {

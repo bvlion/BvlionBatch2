@@ -7,7 +7,7 @@ import lombok.Setter;
 
 import java.nio.charset.StandardCharsets;
 
-public class SSHConnection {
+class SSHConnection {
     private static final int LOCAl_PORT = 3307;
     private static final int REMOTE_PORT = 3306;
 
@@ -15,12 +15,12 @@ public class SSHConnection {
 
     private static final SSHConnection instance = new SSHConnection();
 
-    public static SSHConnection getInstance() {
+    static SSHConnection getInstance() {
         return instance;
     }
 
-    public static final String RSA_KEY_PATH = "id_rsa";
-    public static final String KNOWN_HOSTS_PATH = "known_hosts";
+    static final String RSA_KEY_PATH = "id_rsa";
+    static final String KNOWN_HOSTS_PATH = "known_hosts";
     @Setter
     private String sPassPhrase;
     @Setter

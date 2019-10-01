@@ -3,11 +3,12 @@ package net.ambitious.bvlion.batch2.web.controller;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.ambitious.bvlion.batch2.mapper.DatingMapper;
-import net.ambitious.bvlion.batch2.mapper.RegularAccessUrlMapper;
+import net.ambitious.bvlion.batch2.mapper.*;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
+import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.http.client.fluent.Request;
@@ -16,6 +17,7 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -32,6 +34,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/batch/${url.ifttt}")
 public class OriginalBatchController {
 
+    private static final String JORUDAN_ICON = "https://pbs.twimg.com/profile_images/753471803/JorudanLive-Icon.png";
+
     @NonNull
     private AppParams appParams;
 
@@ -40,6 +44,12 @@ public class OriginalBatchController {
 
     @NonNull
     private final RegularAccessUrlMapper regularAccessUrlMapper;
+
+    @NonNull
+    private final HolidayMapper holidayMapper;
+
+    @NonNull
+    private final ExecTimeMapper execTimeMapper;
 
     @RequestMapping(value = "/dating-notification", method = RequestMethod.PUT) // cron = "0 0 6 * * *"
     public void datingNotification() {
@@ -146,5 +156,61 @@ public class OriginalBatchController {
     @RequestMapping(value = "/url-access", method = RequestMethod.PUT) // cron = "15 3-58/5 * * * *"
     public void urlAccess() {
         this.regularAccessUrlMapper.regularAccessUrls().forEach(url -> AccessUtil.accessGet(url, null, getClass()));
+    }
+
+    @RequestMapping(value = "/jorudan", method = RequestMethod.PUT)
+    public void jorudan(
+            @RequestParam("detail") String detail,
+            @RequestParam("url") String url,
+            @RequestParam("description") String description,
+            @RequestParam("slackChannel") String slackChannel,
+            @RequestParam("searchValue") String searchValue,
+            @RequestParam("date") String date
+    ) throws IOException {
+        if (AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes())) {
+            var details = detail.split("〕");
+            var section = details[0]
+                    .substring(1)
+                    .replaceAll("（.*）", "")
+                    .replace("〜", "から")
+                    + "の区間";
+            var state = details[1].split("／")[0];
+            var googleHomeMessage = searchValue + "の" + section + "で"
+                    + (state.equals("止まってる") ? state : state + "の") + "ようです。";
+            AccessUtil.postGoogleHome(googleHomeMessage, log, appParams);
+        }
+
+        var message = new StringBuilder();
+        message.append(detail);
+        if (StringUtils.isNoneBlank(description)) {
+            message.append("\n");
+            message.append(description);
+        }
+        message.append("\n");
+        message.append("\n");
+        message.append(url);
+        new SlackHttpPost(
+                slackChannel,
+                searchValue + "-" + date,
+                message.toString(),
+                JORUDAN_ICON
+        ).send(appParams);
+        
+    }
+
+    @RequestMapping(value = "/twitter-images", method = RequestMethod.PUT)
+    public void twitterImages(
+            @RequestParam("url") String url,
+            @RequestParam("slackChannel") String slackChannel,
+            @RequestParam("text") String text
+    ) throws IOException {
+        if (appParams.isProduction()) {
+            new SlackBinaryPost.Builder()
+                    .channels(slackChannel)
+                    .title(text)
+                    .fileName(FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)) + ".png")
+                    .fileData(AccessUtil.getBinaryBytes(url))
+                    .build(appParams.getSlackToken()).post(appParams);
+        }
     }
 }
