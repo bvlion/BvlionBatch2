@@ -43,9 +43,6 @@ public class OriginalBatchController {
     private DatingMapper datingMapper;
 
     @NonNull
-    private final RegularAccessUrlMapper regularAccessUrlMapper;
-
-    @NonNull
     private final HolidayMapper holidayMapper;
 
     @NonNull
@@ -151,11 +148,6 @@ public class OriginalBatchController {
         }
 
         return message.toString();
-    }
-
-    @RequestMapping(value = "/url-access", method = RequestMethod.PUT) // cron = "15 3-58/5 * * * *"
-    public void urlAccess() {
-        this.regularAccessUrlMapper.regularAccessUrls().forEach(url -> AccessUtil.accessGet(url, null, getClass()));
     }
 
     @RequestMapping(value = "/jorudan", method = RequestMethod.PUT)

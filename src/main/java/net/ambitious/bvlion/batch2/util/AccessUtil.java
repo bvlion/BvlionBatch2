@@ -12,7 +12,6 @@ import org.apache.commons.lang3.time.FastDateFormat;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
@@ -64,28 +63,6 @@ public class AccessUtil {
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
 		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)));
-	}
-
-	public static void accessGet(String accessUrl, Logger log, Class<?> clazz) {
-		try {
-			var ctx = SSLContext.getInstance("SSL");
-			ctx.init(null, TM.toArray(new TrustManager[0]), new SecureRandom());
-
-			var url = new URL(accessUrl);
-			var conn = (HttpsURLConnection) url.openConnection();
-			conn.setDoOutput(true);
-			conn.setSSLSocketFactory(ctx.getSocketFactory());
-			var responseCode = conn.getResponseCode();
-
-			if (log != null) {
-				log.info("GET " + accessUrl + " HTTP/1.1 -> Response Code : " + responseCode);
-			}
-		} catch (NoSuchAlgorithmException | KeyManagementException | IOException e) {
-			if (log == null) {
-				log = LoggerFactory.getLogger(AccessUtil.class);
-			}
-			log.error(clazz.getName() + " Access Error", e);
-		}
 	}
 
 	public static String convertEn2Ja(String enWord, Logger log) {
