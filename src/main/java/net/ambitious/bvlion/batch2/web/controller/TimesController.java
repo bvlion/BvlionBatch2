@@ -112,7 +112,7 @@ public class TimesController {
 			}
 			switch (entity.getBehaviorType()) {
 				case 1: // エアコンON
-					var param = new StringBuilder("\" timer" + System.currentTimeMillis() + " … ");
+					var param = new StringBuilder("timer" + System.currentTimeMillis() + " … ");
 					switch (entity.getAirconType()) {
 						case 1: // 冷房
 							param.append("aircon:cool");
@@ -128,10 +128,10 @@ public class TimesController {
 						default:
 							return null;
 					}
-					param.append(" … 1 \"");
+					param.append(" … 1");
 					return param.toString();
 				case 2: // エアコンOFF
-					return "\" timer" + System.currentTimeMillis() + " … aircon:off … 1 \"";
+					return "\" timer" + System.currentTimeMillis() + " … aircon:off … 1";
 				default:
 					return null;
 			}
