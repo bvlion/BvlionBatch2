@@ -38,8 +38,9 @@ jobs:
             mv build/reports/tests report/functions/static/tests
 
       - persist_to_workspace:
-          root: report
-          paths: report
+          root: .
+          paths:
+            - .
 
 
   report:
@@ -50,7 +51,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: report
+          at: .
 
       - restore_cache:
           keys:
