@@ -16,7 +16,6 @@
         <result property="sunStarted" column="sun_started_flag" />
         <result property="holidayDecision" column="holiday_decision_flag" />
         <result property="enable" column="enable_flag" />
-        <result property="doExecTime" column="do_exec_time" />
     </resultMap>
 
     <select id="selectExecTimerSetting" resultMap="entityResultMap">
@@ -33,8 +32,7 @@
           sat_started_flag,
           sun_started_flag,
           holiday_decision_flag,
-          enable_flag,
-          do_exec_time
+          enable_flag
         FROM
           timer_data
         WHERE

@@ -22,7 +22,7 @@ class SSHConnection {
     static final String RSA_KEY_PATH = "id_rsa";
     static final String KNOWN_HOSTS_PATH = "known_hosts";
     @Setter
-    private String sPassPhrase;
+    private String sshPassPhrase;
     @Setter
     private int sshRemotePort;
     @Setter
@@ -43,7 +43,7 @@ class SSHConnection {
     void connectSSH() throws JSchException {
         JSch jsch = new JSch();
         jsch.setKnownHosts(KNOWN_HOSTS_PATH);
-        jsch.addIdentity(RSA_KEY_PATH, sPassPhrase.getBytes(StandardCharsets.UTF_8));
+        jsch.addIdentity(RSA_KEY_PATH, sshPassPhrase.getBytes(StandardCharsets.UTF_8));
 
         session = jsch.getSession(sshUser, sshRemoteServer, sshRemotePort);
 

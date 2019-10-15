@@ -1,0 +1,7 @@
+<FindBugsFilter>
+    <Match>
+        <!-- Files.copyでRCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPEが発生してしまうため除外 -->
+        <Class name="~net\.ambitious\.bvlion\.batch2\.util\.ContextListener"/>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+    </Match>
+</FindBugsFilter>

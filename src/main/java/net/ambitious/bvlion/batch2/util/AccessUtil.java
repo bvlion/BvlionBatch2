@@ -41,6 +41,10 @@ public class AccessUtil {
 
 	public static final TimeZone TOKYO = TimeZone.getTimeZone("Asia/Tokyo");
 
+	public static final String YYYY_MM_DD_HH_MM_SS =
+			FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO)
+					.format(Calendar.getInstance(AccessUtil.TOKYO));
+
 	private static final List<TrustManager> TM = Collections.unmodifiableList(Collections.singletonList(
 			new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
@@ -62,7 +66,7 @@ public class AccessUtil {
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(message + " … " + FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)));
+		ref.setValueAsync(message + " … " + YYYY_MM_DD_HH_MM_SS);
 	}
 
 	public static String convertEn2Ja(String enWord, Logger log) {
@@ -215,6 +219,7 @@ public class AccessUtil {
 
 		return cal.after(start5Time) && cal.before(end5Time) && cal.get(Calendar.MINUTE) % 5 == 0;
 	}
+
 	private static Calendar getTargetTime(ExecTimeEnum execTimeEnum, List<ExecTimeEntity> execTimes) {
 		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
 		return execTimes.stream()

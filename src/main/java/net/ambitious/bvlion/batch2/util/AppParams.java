@@ -23,7 +23,7 @@ public class AppParams {
 	private String sshUser;
 	private String sshRemoteServer;
 	private int sshRemotePort;
-	private String sPassPhrase;
+	private String sshPassPhrase;
 	private String mysqlRemoteServer;
 	private String rsaKeyPath;
 	private String knownHostsPath;

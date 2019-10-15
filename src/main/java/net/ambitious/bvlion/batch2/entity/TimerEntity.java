@@ -4,8 +4,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Date;
-
 @Setter
 @Getter
 @NoArgsConstructor
@@ -23,6 +21,5 @@ public class TimerEntity {
     private boolean sunStarted;
     private boolean holidayDecision;
     private boolean enable;
-    private Date doExecTime;
     private String doExecTimeString;
 }

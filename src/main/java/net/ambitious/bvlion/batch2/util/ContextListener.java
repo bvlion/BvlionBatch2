@@ -45,7 +45,7 @@ public class ContextListener implements ServletContextListener {
 			}
 
 			SSHConnection ssh = SSHConnection.getInstance();
-			ssh.setSPassPhrase(appParams.getSPassPhrase());
+			ssh.setSshPassPhrase(appParams.getSshPassPhrase());
 			ssh.setSshRemotePort(appParams.getSshRemotePort());
 			ssh.setSshUser(appParams.getSshUser());
 			ssh.setSshRemoteServer(appParams.getSshRemoteServer());
@@ -61,7 +61,9 @@ public class ContextListener implements ServletContextListener {
 		if (FirebaseApp.getApps().isEmpty()) {
 			try {
 				var options = new FirebaseOptions.Builder()
-						.setCredentials(GoogleCredentials.fromStream(new URL(appParams.getAdminSdkJsonUrl()).openStream()))
+						.setCredentials(GoogleCredentials.fromStream(
+								new URL(appParams.getAdminSdkJsonUrl()).openStream()
+						))
 						.setDatabaseUrl("https://" + appParams.getFirebaseId() + ".firebaseio.com/")
 						.build();
 
