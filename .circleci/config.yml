@@ -2,9 +2,6 @@ version: 2
 
 jobs:
   build:
-    branches:
-      only:
-        - develop
     docker:
       - image: circleci/openjdk:11.0.2-jdk
 
@@ -46,9 +43,6 @@ jobs:
 
 
   report:
-    branches:
-      only:
-        - develop
     docker:
       - image: circleci/node:10.16.3
 
@@ -88,12 +82,14 @@ jobs:
           command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
 
 
-
 workflows:
   version: 2
   all_script:
     jobs:
-    - build
+    - build:
+        filters:
+          branches:
+            only: develop
     - report:
         requires:
           - build
