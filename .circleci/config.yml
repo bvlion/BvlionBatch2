@@ -70,9 +70,8 @@ jobs:
           name: 'set .firebaserc id & pass'
           command: |
             echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
-            sed -i -e 's/"user"/"$BASIC_USER"/' report/functions/index.js
-            sed -i -e 's/"pass"/"$BASIC_PASS"/' report/functions/index.js
-            ls -ltrA report/functions
+            sed -i -e "s/username_replace/$BASIC_USER/" report/functions/index.js
+            sed -i -e "s/password_replace/$BASIC_PASS/" report/functions/index.js
 
       - run:
           name: 'Deploy to Firebase'
