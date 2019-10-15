@@ -31,3 +31,8 @@ out/
 
 log/mysql/mysqld.log
 logs
+
+report/functions/static/*
+report/functions/node_modules
+!report/functions/static/index.html
+report/.firebaserc
