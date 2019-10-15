@@ -47,19 +47,17 @@ jobs:
     docker:
       - image: circleci/node:10.16.3
 
-    working_directory: report
-
     steps:
       - attach_workspace:
           at: .
 
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "functions/package.json" }}
+            - v1-dependencies-{{ checksum "report/functions/package.json" }}
 
       - run: ls -ltrA
 
-      - run: cd functions && npm install
+      - run: cd report/functions && npm install
 
       - run:
           name: 'Install Dependencies'
@@ -67,16 +65,16 @@ jobs:
 
       - save_cache:
           paths:
-            - functions/node_modules
-          key: v1-dependencies-{{ checksum "functions/package.json" }}
+            - report/functions/node_modules
+          key: v1-dependencies-{{ checksum "report/functions/package.json" }}
 
       - run:
           name: 'set .firebaserc id & pass'
           command: |
-            echo -e "{\n  {\n    \"projects\": {\n\        "default\": \"$FIREBASE_PJ\"\n  }\n}" > .firebaserc
-            sed -i -e 's/"user"/"$BASIC_USER"/' functions/index.js
-            sed -i -e 's/"pass"/"$BASIC_PASS"/' functions/index.js
-            rm functions/index.js-e
+            echo -e "{\n  {\n    \"projects\": {\n\        "default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
+            sed -i -e 's/"user"/"$BASIC_USER"/' report/functions/index.js
+            sed -i -e 's/"pass"/"$BASIC_PASS"/' report/functions/index.js
+            rm report/functions/index.js-e
 
       - run:
           name: 'Deploy to Firebase'
