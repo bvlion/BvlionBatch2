@@ -55,8 +55,6 @@ jobs:
           keys:
             - v1-dependencies-{{ checksum "report/functions/package.json" }}
 
-      - run: ls -ltrA
-
       - run: cd report/functions && npm install
 
       - run:
@@ -71,7 +69,7 @@ jobs:
       - run:
           name: 'set .firebaserc id & pass'
           command: |
-            echo -e "{\n  {\n    \"projects\": {\n\        "default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
+            echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
             sed -i -e 's/"user"/"$BASIC_USER"/' report/functions/index.js
             sed -i -e 's/"pass"/"$BASIC_PASS"/' report/functions/index.js
             rm report/functions/index.js-e
