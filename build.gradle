@@ -1,3 +1,5 @@
+import com.github.spotbugs.SpotBugsTask
+
 plugins {
 	id 'org.springframework.boot' version '2.1.7.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
@@ -45,7 +47,6 @@ dependencies {
 	testImplementation 'junit:junit:4.12'
 
 	compile 'com.github.spotbugs:spotbugs:4.0.+'
-	compile 'org.slf4j:slf4j-log4j12:1.7.28'
 }
 
 spotbugs {
@@ -60,7 +61,7 @@ checkstyle {
 	checkstyleTest.enabled false
 }
 
-tasks.withType(com.github.spotbugs.SpotBugsTask) {
+tasks.withType(SpotBugsTask) {
 	reports {
 		xml.enabled = false
 		html.enabled = true
