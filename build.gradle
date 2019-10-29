@@ -3,6 +3,8 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 	id 'idea'
+	id 'checkstyle'
+	id 'com.github.spotbugs' version '2.0.0'
 }
 
 group = 'net.ambitious.bvlion.batch2'
@@ -37,6 +39,36 @@ dependencies {
 	implementation 'com.google.api-client:google-api-client:1.25.0'
 	implementation 'com.google.firebase:firebase-admin:6.10.0'
 	implementation 'com.jcraft:jsch:0.1.54'
+
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
-	testImplementation 'org.springframework.batch:spring-batch-test'
+	testImplementation 'org.mockito:mockito-all:1.10.19'
+	testImplementation 'junit:junit:4.12'
+
+	compile 'com.github.spotbugs:spotbugs:4.0.+'
+	compile 'org.slf4j:slf4j-log4j12:1.7.28'
+}
+
+spotbugs {
+	toolVersion = '4.0.0-beta4'
+	excludeFilter = file("${project.rootDir}/findbugs-exculde.xml")
+	spotbugsTest.enabled false
+}
+
+checkstyle {
+	toolVersion '7.8.1'
+	configFile file("$rootDir/checkstyle.xml")
+	checkstyleTest.enabled false
+}
+
+tasks.withType(com.github.spotbugs.SpotBugsTask) {
+	reports {
+		xml.enabled = false
+		html.enabled = true
+	}
+
+	classes = classes.filter {
+		!it.path.contains(new File("config/").path) &&
+				!it.path.contains(new File("net.ambitious.mapper/").path) &&
+				!it.path.contains(new File("logback.xml").path)
+	}
 }

@@ -61,13 +61,15 @@ public class OriginalBatchController {
                                     now.getTimeInMillis() - anniversary.getTime(), TimeUnit.MILLISECONDS
                             ) + 1;
                             if (totalDays % 100 == 0) {
-                                return String.format(value.getMessage(), NumberFormat.getNumberInstance().format(totalDays));
+                                return String.format(value.getMessage(),
+                                        NumberFormat.getNumberInstance().format(totalDays));
                             }
                         } catch (ParseException e) {
                             log.debug(value.getTargetDate(), e);
                         }
                     } else {
-                        if (FastDateFormat.getInstance("MMdd", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)).equals(value.getTargetDate())) {
+                        if (FastDateFormat.getInstance("MMdd", AccessUtil.TOKYO)
+                                .format(Calendar.getInstance(AccessUtil.TOKYO)).equals(value.getTargetDate())) {
                             return value.getMessage();
                         }
                     }
@@ -200,7 +202,7 @@ public class OriginalBatchController {
             new SlackBinaryPost.Builder()
                     .channels(slackChannel)
                     .title(text)
-                    .fileName(FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO)) + ".png")
+                    .fileName(AccessUtil.YYYY_MM_DD_HH_MM_SS + ".png")
                     .fileData(AccessUtil.getBinaryBytes(url))
                     .build(appParams.getSlackToken()).post(appParams);
         }

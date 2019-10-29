@@ -10,5 +10,8 @@ import java.util.List;
 @Repository
 @Mapper
 public interface TimerDataMapper {
-	List<TimerEntity> selectExecTimerSetting(@Param("exec_started_flag") String execStartedFlagName, @Param("do_exec_time") String doExecTime);
+	List<TimerEntity> selectExecTimerSetting(
+			@Param("exec_started_flag") String execStartedFlagName,
+			@Param("do_exec_time") String doExecTime
+	);
 }

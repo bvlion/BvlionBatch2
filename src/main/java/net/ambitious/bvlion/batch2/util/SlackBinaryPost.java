@@ -2,7 +2,6 @@ package net.ambitious.bvlion.batch2.util;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 
@@ -14,7 +13,6 @@ import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -169,7 +167,7 @@ public class SlackBinaryPost {
 		 * @return Builder
 		 */
 		public Builder fileData(byte[] fileData) {
-			this.fileData = fileData;
+			this.fileData = fileData.clone();
 			return this;
 		}
 
@@ -193,7 +191,7 @@ public class SlackBinaryPost {
 				throw new IllegalArgumentException("必要データが登録されていません。");
 			}
 			if (StringUtils.isBlank(this.fileName)) {
-				this.fileName = FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO).format(Calendar.getInstance(AccessUtil.TOKYO));
+				this.fileName = AccessUtil.YYYY_MM_DD_HH_MM_SS;
 			}
 			return new SlackBinaryPost(this);
 		}
