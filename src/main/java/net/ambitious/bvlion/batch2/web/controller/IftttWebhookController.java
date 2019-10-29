@@ -149,6 +149,7 @@ public class IftttWebhookController {
 						fcmToken,
 						"Slack代理通知",
 						text.replace("&lt;", "<").replace("&gt;", ">"),
+						userName,
 						"slack-proxy"
 				), appParams, log)
 		);

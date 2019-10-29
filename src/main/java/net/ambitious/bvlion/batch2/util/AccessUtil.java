@@ -264,11 +264,13 @@ public class AccessUtil {
 		return googleCredential.getAccessToken();
 	}
 
-	public static String createTokenMessage(String token, String title, String body, String channelId) {
+	public static String createTokenMessage(
+			String token, String title, String body, String userName, String channelId) {
 		try {
 			var data = new JSONObject();
 			data.put("body", body);
 			data.put("title", title);
+			data.put("user", userName);
 			data.put("channelId", channelId);
 			var message = new JSONObject();
 			message.put("token", token);
