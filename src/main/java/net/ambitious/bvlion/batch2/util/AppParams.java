@@ -27,4 +27,5 @@ public class AppParams {
 	private String mysqlRemoteServer;
 	private String rsaKeyPath;
 	private String knownHostsPath;
+	private String batchStartNotificationUrl;
 }

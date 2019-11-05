@@ -12,12 +12,17 @@ import org.springframework.stereotype.Component;
 import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -74,13 +79,13 @@ public class ContextListener implements ServletContextListener {
 		}
 
 		try {
-			new SlackHttpPost(
-					"reminder",
-					"BvlionBatch",
-					"バッチが起動しました。",
-					AccessUtil.SPRING_ICON
-			).send(appParams);
-			AccessUtil.postGoogleHome("バッチが起動しました。", log, appParams);
+			var url = new URL(appParams.getBatchStartNotificationUrl());
+			var con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("POST");
+			try (var br = new BufferedReader(new InputStreamReader(
+					con.getInputStream(), StandardCharsets.UTF_8))) {
+				log.info(br.lines().collect(Collectors.joining("\n")));
+			}
 		} catch (IOException e) {
 			log.warn("Slack Post Error", e);
 		}
