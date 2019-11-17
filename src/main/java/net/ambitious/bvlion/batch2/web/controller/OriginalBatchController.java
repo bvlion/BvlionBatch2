@@ -207,4 +207,13 @@ public class OriginalBatchController {
                     .build(appParams.getSlackToken()).post(appParams);
         }
     }
+
+    @RequestMapping(value = "/motionDetectionNotification", method = RequestMethod.GET)
+    public void motionDetectionNotification() {
+        AccessUtil.sendFcm(
+                AccessUtil.createTopicMessage("empty", "empty", "detection"),
+                appParams,
+                log
+        );
+    }
 }
