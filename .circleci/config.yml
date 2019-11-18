@@ -72,6 +72,7 @@ jobs:
             echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
             sed -i -e "s/username_replace/$BASIC_USER/" report/functions/index.js
             sed -i -e "s/password_replace/$BASIC_PASS/" report/functions/index.js
+            sed -i -e "s/TESTED_DATE/$(TZ=UTC-9 date '+%Y\/%m\/%d %H:%M:%S')/" report/functions/static/index.html
 
       - run:
           name: 'Deploy to Firebase'
