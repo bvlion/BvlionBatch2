@@ -216,4 +216,9 @@ public class OriginalBatchController {
                 log
         );
     }
+
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public void mailFolderApi() {
+
+    }
 }
