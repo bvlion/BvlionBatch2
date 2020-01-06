@@ -37,7 +37,7 @@ public class AccessUtil {
 
 	private static final String E2K_URL = "https://www.sljfaq.org/cgi/e2k.cgi?o=json&word=%s";
 
-	static final String SPRING_ICON = "https://www.ambitious-i.net/img/article_main.png";
+	private static final String SPRING_ICON = "https://www.ambitious-i.net/img/article_main.png";
 
 	public static final TimeZone TOKYO = TimeZone.getTimeZone("Asia/Tokyo");
 
@@ -167,7 +167,7 @@ public class AccessUtil {
 					"server_api",
 					"BvlionBatch2",
 					message + "\\n\\n" + exception.getMessage(),
-					AccessUtil.SPRING_ICON
+					SPRING_ICON
 			).send(appParams);
 		} catch (IOException e) {
 			log.error("Slack Post Error", e);

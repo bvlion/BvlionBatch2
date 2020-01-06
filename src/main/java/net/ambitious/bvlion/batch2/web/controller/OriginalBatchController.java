@@ -4,10 +4,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.mapper.*;
-import net.ambitious.bvlion.batch2.util.AccessUtil;
-import net.ambitious.bvlion.batch2.util.AppParams;
-import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
-import net.ambitious.bvlion.batch2.util.SlackHttpPost;
+import net.ambitious.bvlion.batch2.util.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
@@ -47,6 +44,9 @@ public class OriginalBatchController {
 
     @NonNull
     private final ExecTimeMapper execTimeMapper;
+
+    @NonNull
+    private final MailApiMapper mailApiMapper;
 
     @RequestMapping(value = "/dating-notification", method = RequestMethod.PUT) // cron = "0 0 6 * * *"
     public void datingNotification() {
@@ -217,8 +217,8 @@ public class OriginalBatchController {
         );
     }
 
-    @RequestMapping(value = "", method = RequestMethod.PUT)
+    @RequestMapping(value = "/mail-api", method = RequestMethod.PUT)
     public void mailFolderApi() {
-
+        Mail.getInstance().moveAndSlack(appParams, mailApiMapper.selectTarget());
     }
 }

@@ -9,4 +9,4 @@ CREATE TABLE mail_api
     prefix_format VARCHAR(256) COMMENT 'ユーザー名に付与する date format',
     enable_flag TINYINT NOT NULL COMMENT '有効フラグ',
     PRIMARY KEY (pk)
-) COMMENT '';
+) COMMENT 'メール移動Slack情報';

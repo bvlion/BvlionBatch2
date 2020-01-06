@@ -41,7 +41,7 @@ dependencies {
 	implementation 'com.google.api-client:google-api-client:1.25.0'
 	implementation 'com.google.firebase:firebase-admin:6.10.0'
 	implementation 'com.jcraft:jsch:0.1.54'
-	implementation 'javax.mail:javax.mail-api:1.6.2'
+	implementation 'com.sun.mail:javax.mail:1.6.2'
 
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
