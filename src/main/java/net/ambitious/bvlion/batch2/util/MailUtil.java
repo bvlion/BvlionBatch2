@@ -123,15 +123,17 @@ public class MailUtil {
         @Override
         public boolean match(Message msg) {
             String addressText = "";
+            String subject = "";
             try {
                 var address = msg.getFrom();
                 if (address != null) {
                     addressText = MimeUtility.decodeText(address[0].toString());
                 }
+                subject = getSubject(msg);
             } catch (MessagingException | UnsupportedEncodingException e) {
                 log.warn("MailAddressTerm Error", e);
             }
-            return addressText.contains(getPattern());
+            return addressText.contains(getPattern()) || subject.contains(getPattern());
         }
     }
 }
