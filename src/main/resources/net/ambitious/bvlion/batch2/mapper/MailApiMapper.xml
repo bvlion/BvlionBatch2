@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.MailApiMapper">
+
+	<resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.MailApiEntity">
+		<result property="targetFrom" column="target_from" />
+		<result property="toFolder" column="to_folder" />
+		<result property="channel" column="channel" />
+		<result property="userName" column="user_name" />
+		<result property="iconUrl" column="icon_url" />
+		<result property="prefixFormat" column="prefix_format" />
+	</resultMap>
+
+	<select id="selectTarget" resultMap="entityResultMap">
+		SELECT
+			target_from,
+			to_folder,
+			channel,
+			user_name,
+			icon_url,
+			prefix_format
+		FROM
+        	mail_api
+		WHERE
+			enable_flag = 1
+	</select>
+</mapper>

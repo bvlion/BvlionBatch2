@@ -28,4 +28,8 @@ public class AppParams {
 	private String rsaKeyPath;
 	private String knownHostsPath;
 	private String batchStartNotificationUrl;
+
+	private String mailHost;
+	private String mailUser;
+   	private String mailPassword;
 }
