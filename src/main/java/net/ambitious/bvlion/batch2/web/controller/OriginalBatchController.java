@@ -219,6 +219,6 @@ public class OriginalBatchController {
 
     @RequestMapping(value = "/mail-api", method = RequestMethod.PUT)
     public void mailFolderApi() {
-        Mail.getInstance().moveAndSlack(appParams, mailApiMapper.selectTarget());
+        new Thread(() -> Mail.getInstance().moveAndSlack(appParams, mailApiMapper.selectTarget())).start();
     }
 }
