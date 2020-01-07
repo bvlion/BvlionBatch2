@@ -6,6 +6,8 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.entity.Mp3Entity;
+import net.ambitious.bvlion.batch2.enums.AutoIncrementEnum;
+import net.ambitious.bvlion.batch2.mapper.AutoIncrementsMapper;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.mapper.Mp3Mapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
@@ -40,6 +42,9 @@ public class IftttWebhookController {
 
 	@NonNull
 	private final UserMapper userMapper;
+
+	@NonNull
+	private final AutoIncrementsMapper autoIncrementsMapper;
 
 	private final FirebaseDatabase database = FirebaseDatabase.getInstance();
 	private final DatabaseReference ref = database.getReference("mp3");
@@ -221,6 +226,12 @@ public class IftttWebhookController {
 			return "{\"text\":\"「" + songName + "」は既に存在しています。\"}";
 		}
 
+		if (songName.equals("ねむり")) {
+			int nextValue = autoIncrementsMapper.nextValue(AutoIncrementEnum.SLEEP_MUSIC.getType());
+			songName += " " + nextValue;
+			autoIncrementsMapper.insert(nextValue, AutoIncrementEnum.SLEEP_MUSIC.getType());
+		}
+
 		var nextFileName = mp3Mapper.nextFileName();
 
 		ref.child("name").setValueAsync(String.valueOf(nextFileName));
@@ -229,6 +240,23 @@ public class IftttWebhookController {
 		mp3Mapper.mp3insert(nextFileName, songName, url);
 
 		return "{}";
+	}
+
+	@RequestMapping(value = "/play-sleep-music", method = RequestMethod.PUT)
+	public void playSleepMusicWebhook()  {
+		AccessUtil.postGoogleHome(
+				String.format(
+						appParams.getMp3format(),
+						mp3Mapper.fileName(
+								"ねむり "
+										+ autoIncrementsMapper.randomValue(
+												AutoIncrementEnum.SLEEP_MUSIC.getType()
+								)
+						)
+				),
+				log,
+				appParams
+		);
 	}
 
 	private boolean hasSongName(Mp3Entity mp3, String songNameJa, String songName) {

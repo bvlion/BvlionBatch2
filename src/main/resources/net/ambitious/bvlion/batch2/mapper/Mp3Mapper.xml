@@ -29,4 +29,8 @@
     <select id="songName" resultType="string">
         SELECT song_name FROM mp3 WHERE file_name = #{file_name}
     </select>
+
+    <select id="fileName" resultType="int">
+        SELECT file_name FROM mp3 WHERE song_name = #{song_name}
+    </select>
 </mapper>
