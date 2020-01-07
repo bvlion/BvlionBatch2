@@ -58,7 +58,7 @@ public class MailUtil {
 
             String body = getBody(message);
 
-            return "件名：" + subject + "\n----------\n" + body + "\n----------";
+            return "件名：" + subject + "\n----------\n" + body.replace("\"", "\\\"") + "\n----------";
         } catch (MessagingException | IOException e) {
             log.warn("Can't get subject & body", e);
             return null;
