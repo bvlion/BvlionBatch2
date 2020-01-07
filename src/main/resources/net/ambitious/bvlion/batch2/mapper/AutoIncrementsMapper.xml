@@ -14,7 +14,7 @@
           ai_type = #{type}
     </select>
 
-    <select id="randomValue">
+    <select id="randomValue" resultType="int">
         SELECT ai_value FROM auto_increments WHERE ai_type = #{type} ORDER BY RAND() LIMIT 1
     </select>
 
