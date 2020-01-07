@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="net.ambitious.bvlion.batch2.mapper.AutoIncrementsMapper">
+
+    <select id="nextValue" resultType="int">
+        SELECT
+          CASE WHEN (SELECT COUNT(*) FROM auto_increments WHERE ai_type = #{type}) = 0
+            THEN 1
+            ELSE MAX(ai_value) + 1
+          END
+        FROM
+          auto_increments
+        WHERE
+          ai_type = #{type}
+    </select>
+
+    <select id="randomValue">
+        SELECT ai_value FROM auto_increments WHERE ai_type = #{type} ORDER BY RAND() LIMIT 1
+    </select>
+
+    <insert id="insert">
+        INSERT INTO auto_increments
+        (ai_value, ai_type)
+        VALUES
+        (#{value}, #{type})
+    </insert>
+</mapper>

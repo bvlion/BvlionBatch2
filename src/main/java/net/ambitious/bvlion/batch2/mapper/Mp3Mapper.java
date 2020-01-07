@@ -23,4 +23,6 @@ public interface Mp3Mapper {
 	List<Mp3Entity> allMp3Data();
 
 	String songName(@Param("file_name") int fileName);
+
+	int fileName(@Param("song_name") String songName);
 }
