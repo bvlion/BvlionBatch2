@@ -133,7 +133,11 @@ public class MailUtil {
             } catch (MessagingException | UnsupportedEncodingException e) {
                 log.warn("MailAddressTerm Error", e);
             }
-            return addressText.contains(getPattern()) || subject.contains(getPattern());
+            return contains(addressText) || contains(subject);
+        }
+
+        private boolean contains(String target) {
+            return target.toLowerCase().contains(getPattern().toLowerCase());
         }
     }
 }
