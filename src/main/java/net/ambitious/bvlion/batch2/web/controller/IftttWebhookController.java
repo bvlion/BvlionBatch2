@@ -210,6 +210,8 @@ public class IftttWebhookController {
 					+ "\"}";
 		}
 
+		log.info("youtube-dl: " + text);
+
 		if (!text.contains("http")) {
 			return "{\"text\":\"コメントにYoutubeのURLが含まれていないようです。\\n<曲名><URL>\\nで送信してください。\"}";
 		}
