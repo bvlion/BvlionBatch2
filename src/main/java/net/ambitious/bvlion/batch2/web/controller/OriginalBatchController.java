@@ -59,7 +59,7 @@ public class OriginalBatchController {
                             var anniversary = DateUtils.parseDate(value.getTargetDate(), "yyyyMMdd");
                             var totalDays = TimeUnit.DAYS.convert(
                                     now.getTimeInMillis() - anniversary.getTime(), TimeUnit.MILLISECONDS
-                            ) + 1;
+                            );
                             if (totalDays % 100 == 0) {
                                 return String.format(value.getMessage(),
                                         NumberFormat.getNumberInstance().format(totalDays));
@@ -77,7 +77,7 @@ public class OriginalBatchController {
                 }).collect(Collectors.joining("\n"));
 
         if (message.trim().length() > 0) {
-            log.debug("DatingBatch:" + message);
+            log.info("DatingBatch:" + message);
             AccessUtil.sendFcm(
                     AccessUtil.createTopicMessage("記念日通知", message + "おめでとう(*･ω･)ﾉ", "dating"),
                     appParams,

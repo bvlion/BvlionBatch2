@@ -17,5 +17,7 @@ public interface UserMapper {
 
     List<String> otherFcmTokens(@Param("user") String user);
 
+    String targetUsersFcmToken(@Param("user") String user);
+
     List<String> allUsers();
 }

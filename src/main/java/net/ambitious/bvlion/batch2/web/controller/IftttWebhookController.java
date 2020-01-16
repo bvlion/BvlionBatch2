@@ -15,6 +15,7 @@ import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
+import net.ambitious.bvlion.batch2.web.exception.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
@@ -102,7 +103,7 @@ public class IftttWebhookController {
 	public void googleHomesVoiceRecognitionCharacterStringCheck(@RequestBody Map<String, String> postData) {
 		try {
 			new SlackHttpPost(
-					"server_api",
+					"youtube-dl",
 					"Google Home",
 					"Google Homeは「" + postData.get("text") + "」と認識しました。",
 					"https://4s.ambitious-i.net/icon/GoogleHome.png")
@@ -160,6 +161,21 @@ public class IftttWebhookController {
 		);
 
 		return "{}";
+	}
+
+	@RequestMapping(value = "/alarm-notification/{user}", method = RequestMethod.PUT)
+	public void alarmNotification(@PathVariable String user) {
+		var fcmToken = userMapper.targetUsersFcmToken(user);
+		if (StringUtils.isBlank(fcmToken)) {
+			throw new NotFoundException();
+		}
+		AccessUtil.sendFcm(AccessUtil.createTokenMessage(
+				fcmToken,
+				"empty",
+				"empty",
+				"empty",
+				"alarm"
+		), appParams, log);
 	}
 
 	@RequestMapping(value = "/youtube-notification/{fileName}", method = RequestMethod.PUT)
