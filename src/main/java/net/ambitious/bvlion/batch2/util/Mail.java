@@ -29,7 +29,6 @@ public class Mail {
             value = "RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE",
             justification = "because null checked by try-with-resources")
     public void moveAndSlack(AppParams appParams, List<MailApiEntity> mailApiEntities) {
-        long start = System.currentTimeMillis();
         try (var store = new IMAPStore(session, null)) {
             store.connect(appParams.getMailHost(), 143, appParams.getMailUser(), appParams.getMailPassword());
             try (var folder = store.getFolder("INBOX")) {
@@ -46,12 +45,15 @@ public class Mail {
                         Arrays.sort(messages, new MailUtil.MailComparator());
 
                         // 適切にフォーマットしてSlackにPost
-                        Arrays.stream(messages).map(msg -> new MailUtil.SlackPostEntity(
-                                entity.getChannel(),
-                                MailUtil.getSlackUserName(entity, msg),
-                                MailUtil.getPostMessage(msg, folder),
-                                entity.getIconUrl()
-                        )).forEach(model -> MailUtil.slackPost(model, appParams));
+                        Arrays.stream(messages)
+                                .map(MailUtil::setSeenFlag)
+                                .map(msg -> new MailUtil.SlackPostEntity(
+                                        entity.getChannel(),
+                                        MailUtil.getSlackUserName(entity, msg),
+                                        MailUtil.getPostMessage(msg, folder),
+                                        entity.getIconUrl())
+                                )
+                                .forEach(model -> MailUtil.slackPost(model, appParams));
 
                         // INBOX から削除
                         folder.copyMessages(messages, store.getFolder("INBOX." + entity.getToFolder()));
@@ -72,6 +74,5 @@ public class Mail {
         } catch (MessagingException e) {
             log.warn("JavaMail Connect Error", e);
         }
-        log.info("moveAndSlack done: " + (System.currentTimeMillis() - start) + "ms");
     }
 }

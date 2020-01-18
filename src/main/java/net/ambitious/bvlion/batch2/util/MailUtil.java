@@ -94,6 +94,15 @@ public class MailUtil {
         }
     }
 
+    public static Message setSeenFlag(Message message) {
+        try {
+            message.setFlag(Flags.Flag.SEEN, true);
+        } catch (MessagingException e) {
+            log.warn("Can't set seen flag", e);
+        }
+        return message;
+    }
+
     @Getter
     @AllArgsConstructor
     public static class SlackPostEntity {
