@@ -171,7 +171,7 @@ public class OriginalBatchController {
             var state = details[1].split("／")[0];
             var googleHomeMessage = searchValue + "の" + section + "で"
                     + (state.equals("止まってる") ? state : state + "の") + "ようです。";
-            AccessUtil.postGoogleHome(googleHomeMessage, log, appParams);
+            AccessUtil.postGoogleHome(googleHomeMessage, log, appParams, 50);
         }
 
         var message = new StringBuilder();
@@ -202,7 +202,7 @@ public class OriginalBatchController {
             new SlackBinaryPost.Builder()
                     .channels(slackChannel)
                     .title(text)
-                    .fileName(AccessUtil.YYYY_MM_DD_HH_MM_SS + ".png")
+                    .fileName(AccessUtil.getYMDHMS() + ".png")
                     .fileData(AccessUtil.getBinaryBytes(url))
                     .build(appParams.getSlackToken()).post(appParams);
         }

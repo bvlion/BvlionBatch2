@@ -41,9 +41,10 @@ public class AccessUtil {
 
 	public static final TimeZone TOKYO = TimeZone.getTimeZone("Asia/Tokyo");
 
-	public static final String YYYY_MM_DD_HH_MM_SS =
-			FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO)
-					.format(Calendar.getInstance(AccessUtil.TOKYO));
+	public static String getYMDHMS() {
+		return FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO)
+				.format(Calendar.getInstance(AccessUtil.TOKYO));
+	}
 
 	private static final List<TrustManager> TM = Collections.unmodifiableList(Collections.singletonList(
 			new X509TrustManager() {
@@ -59,15 +60,15 @@ public class AccessUtil {
 			}
 	));
 
-	public static void postGoogleHome(String message, Logger log, AppParams appParams) {
+	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume) {
 		if (!appParams.isProduction()) {
 			log.info(message + ":OK");
 			return;
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(message + " … " + YYYY_MM_DD_HH_MM_SS);
-	}
+		ref.setValueAsync(message + " … " + getYMDHMS() + " … " + volume);
+    }
 
 	public static String convertEn2Ja(String enWord, Logger log) {
 		if (StringUtils.isBlank(enWord)) {
@@ -160,7 +161,7 @@ public class AccessUtil {
 	}
 
 	static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
-		postGoogleHome(message, log, appParams);
+		postGoogleHome(message, log, appParams, 20);
 
 		try {
 			new SlackHttpPost(

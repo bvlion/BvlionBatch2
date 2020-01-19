@@ -62,7 +62,8 @@ public class TimesController {
 			AccessUtil.postGoogleHome(
 					message,
 					log,
-					appParams
+					appParams,
+					45
 			);
 			new SlackHttpPost(
 					"reminder",
@@ -79,7 +80,8 @@ public class TimesController {
 		AccessUtil.postGoogleHome(
 				message,
 				log,
-				appParams
+				appParams,
+				45
 		);
 		new SlackHttpPost(
 				"reminder",
@@ -95,7 +97,8 @@ public class TimesController {
 			AccessUtil.postGoogleHome(
 					"おはようございます。検温は済んでいますか？",
 					log,
-					appParams
+					appParams,
+					55
 			);
 		}
 	}

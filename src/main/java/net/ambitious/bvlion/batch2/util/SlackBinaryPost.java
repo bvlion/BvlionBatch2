@@ -191,7 +191,7 @@ public class SlackBinaryPost {
 				throw new IllegalArgumentException("必要データが登録されていません。");
 			}
 			if (StringUtils.isBlank(this.fileName)) {
-				this.fileName = AccessUtil.YYYY_MM_DD_HH_MM_SS;
+				this.fileName = AccessUtil.getYMDHMS();
 			}
 			return new SlackBinaryPost(this);
 		}
