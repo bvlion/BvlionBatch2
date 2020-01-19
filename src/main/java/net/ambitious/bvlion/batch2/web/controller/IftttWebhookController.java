@@ -90,12 +90,12 @@ public class IftttWebhookController {
 			message = String.format(appParams.getMp3format(), entity.getFileName());
 		}
 
-		AccessUtil.postGoogleHome(message, log, appParams);
+		AccessUtil.postGoogleHome(message, log, appParams, 40);
 	}
 
 	@RequestMapping(value = "/speak-text", method = RequestMethod.PUT)
 	public String speakTextWebHook(@RequestParam("text") String text)  {
-		AccessUtil.postGoogleHome(text, log, appParams);
+		AccessUtil.postGoogleHome(text, log, appParams, 45);
 		return "{}";
 	}
 
@@ -238,7 +238,7 @@ public class IftttWebhookController {
 		}
 
 		var songName = texts[0].substring(0, texts[0].length() - 1);
-		var url = "http" + texts[1].substring(0, texts[1].length() - 1);
+		final var url = "http" + texts[1].substring(0, texts[1].length() - 1);
 
 		if (mp3Mapper.hasSongName(songName)) {
 			return "{\"text\":\"「" + songName + "」は既に存在しています。\"}";
@@ -273,7 +273,8 @@ public class IftttWebhookController {
 						)
 				),
 				log,
-				appParams
+				appParams,
+				25
 		);
 	}
 
