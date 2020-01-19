@@ -41,7 +41,7 @@ public class AccessUtil {
 
 	public static final TimeZone TOKYO = TimeZone.getTimeZone("Asia/Tokyo");
 
-	public static String getYMDHMS() {
+	public static String getYmdhms() {
 		return FastDateFormat.getInstance("yyyyMMddHHmmss", AccessUtil.TOKYO)
 				.format(Calendar.getInstance(AccessUtil.TOKYO));
 	}
@@ -67,7 +67,7 @@ public class AccessUtil {
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(message + " … " + getYMDHMS() + " … " + volume);
+		ref.setValueAsync(message + " … " + getYmdhms() + " … " + volume);
     }
 
 	public static String convertEn2Ja(String enWord, Logger log) {

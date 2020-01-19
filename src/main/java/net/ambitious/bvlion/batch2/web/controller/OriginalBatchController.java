@@ -202,7 +202,7 @@ public class OriginalBatchController {
             new SlackBinaryPost.Builder()
                     .channels(slackChannel)
                     .title(text)
-                    .fileName(AccessUtil.getYMDHMS() + ".png")
+                    .fileName(AccessUtil.getYmdhms() + ".png")
                     .fileData(AccessUtil.getBinaryBytes(url))
                     .build(appParams.getSlackToken()).post(appParams);
         }

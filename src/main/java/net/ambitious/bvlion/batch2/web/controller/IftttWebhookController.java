@@ -238,7 +238,7 @@ public class IftttWebhookController {
 		}
 
 		var songName = texts[0].substring(0, texts[0].length() - 1);
-		var url = "http" + texts[1].substring(0, texts[1].length() - 1);
+		final var url = "http" + texts[1].substring(0, texts[1].length() - 1);
 
 		if (mp3Mapper.hasSongName(songName)) {
 			return "{\"text\":\"「" + songName + "」は既に存在しています。\"}";
