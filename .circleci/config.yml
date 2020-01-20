@@ -86,7 +86,9 @@ workflows:
   version: 2
   all_script:
     jobs:
-    - build
+    - build:
+        ignore:
+          - master
     - report:
         requires:
           - build
