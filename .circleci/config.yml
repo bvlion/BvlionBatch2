@@ -89,7 +89,7 @@ workflows:
     - build:
         filters:
           branches:
-            only: develop
+            only: master
     - report:
         requires:
           - build
