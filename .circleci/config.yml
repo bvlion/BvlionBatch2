@@ -86,10 +86,7 @@ workflows:
   version: 2
   all_script:
     jobs:
-    - build:
-        filters:
-          branches:
-            only: master
+    - build
     - report:
         requires:
           - build
