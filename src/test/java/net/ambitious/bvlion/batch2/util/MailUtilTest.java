@@ -1,5 +1,6 @@
 package net.ambitious.bvlion.batch2.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.junit.Test;
 import org.mockito.stubbing.OngoingStubbing;
 
@@ -8,6 +9,7 @@ import javax.mail.*;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.Enumeration;
 
@@ -35,5 +37,12 @@ public class MailUtilTest {
 
         when(message.getFlags()).thenThrow(new MessagingException());
         assertFalse(MailUtil.isNotSet(message));
+    }
+
+    @Test
+    public void getSubjectTest() throws MessagingException, UnsupportedEncodingException {
+        Message message = mock(Message.class);
+        when(message.getSubject()).thenReturn("");
+        assertEquals(MailUtil.getSubject(message), StringUtils.EMPTY);
     }
 }
