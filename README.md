@@ -1,3 +1,7 @@
+## Build
+
+[![CircleCI](https://circleci.com/gh/bvlion/BvlionBatch2.svg?style=svg)](https://circleci.com/gh/bvlion/BvlionBatch2)
+
 ## Java11
 
 ```
