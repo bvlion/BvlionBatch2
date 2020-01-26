@@ -89,6 +89,8 @@ workflows:
     - build:
         filters:
           branches:
-            ignore: master
+            ignore:
+              - master
     - report:
-        requires: build
+        requires:
+          - build
