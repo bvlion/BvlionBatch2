@@ -9,8 +9,8 @@ import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
 import net.ambitious.bvlion.batch2.enums.ExecTimeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
-import org.codehaus.jettison.json.JSONException;
-import org.codehaus.jettison.json.JSONObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 
 import javax.net.ssl.HttpsURLConnection;

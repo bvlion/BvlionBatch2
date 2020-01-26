@@ -24,7 +24,6 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-batch'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
@@ -42,7 +41,7 @@ dependencies {
 	implementation 'com.google.firebase:firebase-admin:6.10.0'
 	implementation 'com.jcraft:jsch:0.1.54'
 	implementation 'com.sun.mail:javax.mail:1.6.2'
-
+	implementation 'org.json:json:20190722'
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.mockito:mockito-all:1.10.19'
