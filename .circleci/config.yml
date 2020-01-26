@@ -87,8 +87,8 @@ workflows:
   all_script:
     jobs:
     - build:
-        ignore:
-          - master
+        filters:
+          branches:
+            ignore: master
     - report:
-        requires:
-          - build
+        requires: build
