@@ -232,13 +232,13 @@ public class IftttWebhookController {
 			return "{\"text\":\"コメントにYoutubeのURLが含まれていないようです。\\n<曲名><URL>\\nで送信してください。\"}";
 		}
 
-		var texts = text.split("http");
+		var texts = text.split("<");
 		if (texts.length != 2) {
 			return "{\"text\":\"入力値が不正なようです。\\n<曲名><URL>\\nで送信してください。\"}";
 		}
 
-		var songName = texts[0].substring(0, texts[0].length() - 1);
-		final var url = "http" + texts[1].substring(0, texts[1].length() - 1);
+		var songName = texts[0];
+		final var url = texts[1].split("\\|")[0];
 
 		if (mp3Mapper.hasSongName(songName)) {
 			return "{\"text\":\"「" + songName + "」は既に存在しています。\"}";
