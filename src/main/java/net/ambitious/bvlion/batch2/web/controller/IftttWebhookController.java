@@ -17,6 +17,7 @@ import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
 import net.ambitious.bvlion.batch2.web.exception.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -115,18 +116,19 @@ public class IftttWebhookController {
 
 	@RequestMapping(value = "/ifttt-set-holiday", method = RequestMethod.POST)
 	public String iftttSetHoliday(@RequestBody Map<String, String> postData) {
-		final var dateType = postData.get("data");
+		final var dateType = postData.get("date");
+		final var holidayType = NumberUtils.toInt(postData.get("holiday"));
 
 		if (StringUtils.isBlank(dateType)) {
 			throw new IllegalArgumentException("IFTTT set Holiday：" + postData);
 		}
 
 		if (dateType.equals("1")) {
-			holidayMapper.setHoliday(AccessUtil.getNow("yyyy-MM-dd"), 1);
+			holidayMapper.setHoliday(AccessUtil.getNow("yyyy-MM-dd"), holidayType);
 
 		}
 		if (dateType.equals("2")) {
-			holidayMapper.setHoliday(AccessUtil.getNextDate("yyyy-MM-dd"), 1);
+			holidayMapper.setHoliday(AccessUtil.getNextDate("yyyy-MM-dd"), holidayType);
 		}
 
 		return "{}";
