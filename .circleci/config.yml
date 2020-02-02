@@ -1,5 +1,10 @@
 version: 2
 
+parameters:
+  run_build:
+    type: boolean
+    default: false
+
 jobs:
   build:
     docker:
@@ -89,18 +94,57 @@ jobs:
           command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
 
 
+  relaese:
+    docker:
+      - image: circleci/openjdk:11.0.2-jdk
+
+    environment:
+      JVM_OPTS: -Xmx3200m
+
+    steps:
+      - checkout
+
+      - run:
+          name: SetUp Build
+          command: chmod 755 gradlew
+
+      - restore_cache:
+          key: dependencies-{{ checksum "build.gradle" }}
+
+      - run:
+          name: gradle dependencies
+          command: ./gradlew dependencies
+
+      - save_cache:
+          paths: ~/.gradle
+          key: dependencies-{{ checksum "build.gradle" }}
+
+      - run:
+          name: Build apk
+          command: ./gradlew clean test
+
+      - run:
+          name: Heroku Git Push
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+
+
 workflows:
   version: 2
   all_script:
+    when: << pipeline.parameters.run_build >>
     jobs:
       - build:
           filters:
-            tags:
-              only: /.*/
             branches:
-              only:
+              ignore:
                 - master
-                - /fix.*/
       - report:
           requires:
             - build
+      - release:
+          filters:
+            tags:
+              only: /v.*/
+            branches:
+              only: master
+
