@@ -56,14 +56,14 @@ jobs:
       - attach_workspace:
           at: /tmp/workspace
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "report/functions/package.json" }}
-
       - run:
           name: Report file move
           command: |
             mv /tmp/workspace/report report
+
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "report/functions/package.json" }}
 
       - run: cd report/functions && npm install
 
@@ -93,11 +93,14 @@ workflows:
   version: 2
   all_script:
     jobs:
-    - build:
-        filters:
-          branches:
-            ignore:
-              - master
-    - report:
-        requires:
-          - build
+      - build:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only:
+                - master
+                - /fix.*/
+      - report:
+          requires:
+            - build
