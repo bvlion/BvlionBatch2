@@ -36,12 +36,13 @@ jobs:
             mv build/reports/checkstyle report/functions/static/checkstyle
             mv build/reports/spotbugs report/functions/static/spotbugs
             mv build/reports/tests report/functions/static/tests
+            mv report /tmp/workspace/report
 
       - store_test_results:
           path: build/test-results
 
       - persist_to_workspace:
-          root: /home/circleci
+          root: /tmp/workspace
           paths:
             - report
 
@@ -52,11 +53,16 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: /home/circleci
+          at: /tmp/workspace
 
       - restore_cache:
           keys:
             - v1-dependencies-{{ checksum "report/functions/package.json" }}
+
+      - run:
+          name: Report file move
+          command: |
+            mv /tmp/workspace/report report
 
       - run: cd report/functions && npm install
 
