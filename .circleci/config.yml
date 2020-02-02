@@ -1,4 +1,4 @@
-version: 2
+version: 2.1
 
 parameters:
   run_build:
@@ -94,7 +94,7 @@ jobs:
           command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
 
 
-  relaese:
+  release:
     docker:
       - image: circleci/openjdk:11.0.2-jdk
 
