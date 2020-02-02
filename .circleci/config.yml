@@ -41,9 +41,9 @@ jobs:
           path: build/test-results
 
       - persist_to_workspace:
-          root: .
+          root: /home/circleci
           paths:
-            - .
+            - report
 
 
   report:
@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - attach_workspace:
-          at: .
+          at: /home/circleci
 
       - restore_cache:
           keys:
