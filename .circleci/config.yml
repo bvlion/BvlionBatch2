@@ -36,7 +36,8 @@ jobs:
             mv build/reports/checkstyle report/functions/static/checkstyle
             mv build/reports/spotbugs report/functions/static/spotbugs
             mv build/reports/tests report/functions/static/tests
-            mv report /tmp/workspace/report
+            mkdir /tmp/workspace
+            mv report /tmp/workspace
 
       - store_test_results:
           path: build/test-results
