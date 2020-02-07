@@ -14,43 +14,46 @@ jobs:
       JVM_OPTS: -Xmx3200m
 
     steps:
-      - checkout
+      - when:
+          condition: << pipeline.parameters.run_build >>
+          steps:
+            - checkout
 
-      - run:
-          name: SetUp Build
-          command: chmod 755 gradlew
+            - run:
+                name: SetUp Build
+                command: chmod 755 gradlew
 
-      - restore_cache:
-          key: dependencies-{{ checksum "build.gradle" }}
+            - restore_cache:
+                key: dependencies-{{ checksum "build.gradle" }}
 
-      - run:
-          name: gradle dependencies
-          command: ./gradlew dependencies
+            - run:
+                name: gradle dependencies
+                command: ./gradlew dependencies
 
-      - save_cache:
-          paths: ~/.gradle
-          key: dependencies-{{ checksum "build.gradle" }}
+            - save_cache:
+                paths: ~/.gradle
+                key: dependencies-{{ checksum "build.gradle" }}
 
-      - run:
-          name: Build apk
-          command: ./gradlew clean build
+            - run:
+                name: Build apk
+                command: ./gradlew clean build
 
-      - run:
-          name: Report file move
-          command: |
-            mv build/reports/checkstyle report/functions/static/checkstyle
-            mv build/reports/spotbugs report/functions/static/spotbugs
-            mv build/reports/tests report/functions/static/tests
-            mkdir /tmp/workspace
-            mv report /tmp/workspace
+            - run:
+                name: Report file move
+                command: |
+                  mv build/reports/checkstyle report/functions/static/checkstyle
+                  mv build/reports/spotbugs report/functions/static/spotbugs
+                  mv build/reports/tests report/functions/static/tests
+                  mkdir /tmp/workspace
+                  mv report /tmp/workspace
 
-      - store_test_results:
-          path: build/test-results
+            - store_test_results:
+                path: build/test-results
 
-      - persist_to_workspace:
-          root: /tmp/workspace
-          paths:
-            - report
+            - persist_to_workspace:
+                root: /tmp/workspace
+                paths:
+                  - report
 
 
   report:
@@ -102,45 +105,50 @@ jobs:
       JVM_OPTS: -Xmx3200m
 
     steps:
-      - checkout
+      - when:
+          condition: << pipeline.parameters.run_build >>
+          steps:
+            - checkout
 
-      - run:
-          name: SetUp Build
-          command: chmod 755 gradlew
+            - run:
+                name: SetUp Build
+                command: chmod 755 gradlew
 
-      - restore_cache:
-          key: dependencies-{{ checksum "build.gradle" }}
+            - restore_cache:
+                key: dependencies-{{ checksum "build.gradle" }}
 
-      - run:
-          name: gradle dependencies
-          command: ./gradlew dependencies
+            - run:
+                name: gradle dependencies
+                command: ./gradlew dependencies
 
-      - save_cache:
-          paths: ~/.gradle
-          key: dependencies-{{ checksum "build.gradle" }}
+            - save_cache:
+                paths: ~/.gradle
+                key: dependencies-{{ checksum "build.gradle" }}
 
-      - run:
-          name: Build apk
-          command: ./gradlew clean test
+            - run:
+                name: Build apk
+                command: ./gradlew clean test
 
-      - run:
-          name: Heroku Git Push
-          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+            - run:
+                name: Heroku Git Push
+                command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 
   push:
     docker:
       - image: circleci/openjdk:11.0.2-jdk
     steps:
-      - run:
-          name: echo
-          command: echo 'pushed'
+      - unless:
+          condition: << pipeline.parameters.run_build >>
+          steps:
+            - run:
+                name: echo
+                command: echo 'pushed'
 
 
 workflows:
   version: 2
   build_script:
-    when: << pipeline.parameters.run_build >>
     jobs:
       - build:
           filters:
@@ -151,7 +159,6 @@ workflows:
           requires:
             - build
   release_script:
-    when: << pipeline.parameters.run_build >>
     jobs:
       - release:
           filters:
@@ -161,7 +168,6 @@ workflows:
               ignore: /.*/
 
   push:
-    unless: << pipeline.parameters.run_build >>
     jobs:
       - push:
         filters:
