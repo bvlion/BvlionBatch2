@@ -139,7 +139,7 @@ jobs:
 
 workflows:
   version: 2
-  all_script:
+  build_script:
     when: << pipeline.parameters.run_build >>
     jobs:
       - build:
@@ -150,12 +150,16 @@ workflows:
       - report:
           requires:
             - build
+  release_script:
+    when: << pipeline.parameters.run_build >>
+    jobs:
       - release:
           filters:
             tags:
               only: /v.*/
             branches:
-              only: master
+              ignore: /.*/
+
   push:
     unless: << pipeline.parameters.run_build >>
     jobs:
