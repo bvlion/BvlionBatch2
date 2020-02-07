@@ -4,9 +4,7 @@ const basicAuth = require('basic-auth-connect')
 
 const app = express()
 
-app.all('/*', basicAuth(function(user, password) {
-  return user === "username_replace" && password === "password_replace";
-}));
+app.all('/*', basicAuth((user, password) => user === "username_replace" && password === "password_replace"));
 
 app.use(express.static(__dirname + '/static/'))
 
