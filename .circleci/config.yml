@@ -14,7 +14,7 @@ jobs:
       JVM_OPTS: -Xmx3200m
 
     steps:
-      - run: echo "run_build is << pipeline.parameters.run_build >>"
+      - run: echo "build run_build is << pipeline.parameters.run_build >>"
       - when:
           condition: << pipeline.parameters.run_build >>
           steps:
@@ -62,40 +62,44 @@ jobs:
       - image: circleci/node:10.16.3
 
     steps:
-      - attach_workspace:
-          at: /tmp/workspace
+      - run: echo "report run_build is << pipeline.parameters.run_build >>"
+      - when:
+          condition: << pipeline.parameters.run_build >>
+          steps:
+            - attach_workspace:
+                at: /tmp/workspace
 
-      - run:
-          name: Report file move
-          command: |
-            mv /tmp/workspace/report report
+            - run:
+                name: Report file move
+                command: |
+                  mv /tmp/workspace/report report
 
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "report/functions/package.json" }}
+            - restore_cache:
+                keys:
+                  - v1-dependencies-{{ checksum "report/functions/package.json" }}
 
-      - run: cd report/functions && npm install
+            - run: cd report/functions && npm install
 
-      - run:
-          name: 'Install Dependencies'
-          command: npm install --save-dev firebase-tools
+            - run:
+                name: 'Install Dependencies'
+                command: npm install --save-dev firebase-tools
 
-      - save_cache:
-          paths:
-            - report/functions/node_modules
-          key: v1-dependencies-{{ checksum "report/functions/package.json" }}
+            - save_cache:
+                paths:
+                  - report/functions/node_modules
+                key: v1-dependencies-{{ checksum "report/functions/package.json" }}
 
-      - run:
-          name: 'set .firebaserc id & pass'
-          command: |
-            echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
-            sed -i -e "s/username_replace/$BASIC_USER/" report/functions/index.js
-            sed -i -e "s/password_replace/$BASIC_PASS/" report/functions/index.js
-            sed -i -e "s/TESTED_DATE/$(TZ=UTC-9 date '+%Y\/%m\/%d %H:%M:%S')/" report/functions/static/index.html
+            - run:
+                name: 'set .firebaserc id & pass'
+                command: |
+                  echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
+                  sed -i -e "s/username_replace/$BASIC_USER/" report/functions/index.js
+                  sed -i -e "s/password_replace/$BASIC_PASS/" report/functions/index.js
+                  sed -i -e "s/TESTED_DATE/$(TZ=UTC-9 date '+%Y\/%m\/%d %H:%M:%S')/" report/functions/static/index.html
 
-      - run:
-          name: 'Deploy to Firebase'
-          command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
+            - run:
+                name: 'Deploy to Firebase'
+                command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
 
 
   release:
@@ -135,20 +139,6 @@ jobs:
                 name: Heroku Git Push
                 command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
-
-  push:
-    docker:
-      - image: circleci/openjdk:11.0.2-jdk
-    steps:
-      - run: echo "run_build is << pipeline.parameters.run_build >>"
-      - unless:
-          condition: << pipeline.parameters.run_build >>
-          steps:
-            - run:
-                name: echo
-                command: echo 'pushed'
-
-
 workflows:
   version: 2
   build_script:
@@ -169,11 +159,3 @@ workflows:
               only: /v.*/
             branches:
               ignore: /.*/
-
-  push:
-    jobs:
-      - push:
-        filters:
-          branches:
-            only: master
-
