@@ -48,9 +48,6 @@ public class IftttWebhookController {
 	@NonNull
 	private final AutoIncrementsMapper autoIncrementsMapper;
 
-	private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-	private final DatabaseReference ref = database.getReference("mp3");
-
 	@Transactional
 	@RequestMapping(value = "/holiday-setting/{holidayType}", method = RequestMethod.PUT)
 	public String holidaySetting(@PathVariable int holidayType)  {
@@ -254,6 +251,8 @@ public class IftttWebhookController {
 
 		var nextFileName = mp3Mapper.nextFileName();
 
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference ref = database.getReference("mp3");
 		ref.child("name").setValueAsync(String.valueOf(nextFileName));
 		ref.child("url").setValueAsync(url);
 

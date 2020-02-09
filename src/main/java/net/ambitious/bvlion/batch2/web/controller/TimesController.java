@@ -40,9 +40,6 @@ public class TimesController {
 	@NonNull
 	private final AppParams appParams;
 
-	private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-	private final DatabaseReference ref = database.getReference("node/infrared");
-
 	@RequestMapping(value = "/is/time-notification", method = RequestMethod.GET)
 	public int isTimeNotification()  {
 		return AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes()) ? 1 : 0;
@@ -138,6 +135,11 @@ public class TimesController {
 				default:
 					return null;
 			}
-		}).filter(StringUtils::isNotEmpty).forEach(ref::setValueAsync);
+		}).filter(StringUtils::isNotEmpty).forEach(getDatabaseReference()::setValueAsync);
+	}
+
+	private DatabaseReference getDatabaseReference() {
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		return database.getReference("node/infrared");
 	}
 }

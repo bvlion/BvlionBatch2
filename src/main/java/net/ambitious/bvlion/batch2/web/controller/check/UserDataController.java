@@ -27,9 +27,6 @@ public class UserDataController {
 	@NonNull
 	private final AppParams appParams;
 
-	private final FirebaseDatabase database = FirebaseDatabase.getInstance();
-	private final DatabaseReference ref = database.getReference("camera/mode");
-
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/realtime_setting/select", method = RequestMethod.GET)
 	public RealtimeSettingEntity selectRealtimeSetting() {
@@ -65,6 +62,9 @@ public class UserDataController {
 		}
 
 		if (cameraMode > -1) {
+			FirebaseDatabase database = FirebaseDatabase.getInstance();
+			DatabaseReference ref = database.getReference("camera/mode");
+
 			ref.setValueAsync(cameraMode);
 			this.realtimeSettingMapper.updateMonitoringMode(cameraMode);
 
