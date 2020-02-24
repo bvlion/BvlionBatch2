@@ -4,6 +4,9 @@ parameters:
   run_build:
     type: boolean
     default: false
+  version:
+    type: string
+    default: test
 
 jobs:
   build:
