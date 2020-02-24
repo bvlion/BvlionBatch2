@@ -15,15 +15,15 @@
     </update>
 
     <select id="userCount" resultType="int">
-        SELECT COUNT(*) FROM users WHERE user_name != 'test' AND in_home_flag = 1
+        SELECT COUNT(*) FROM users WHERE fcm_id != '' AND in_home_flag = 1
     </select>
 
     <select id="otherFcmTokens" resultType="string">
-        SELECT fcm_id FROM users WHERE user_name != #{user} AND user_name != 'test'
+        SELECT fcm_id FROM users WHERE user_name != #{user} AND fcm_id != ''
     </select>
 
     <select id="allUsers" resultType="string">
-        SELECT user_name FROM users WHERE user_name != 'test'
+        SELECT user_name FROM users WHERE user_name
     </select>
 
     <select id="targetUsersFcmToken" resultType="string">
