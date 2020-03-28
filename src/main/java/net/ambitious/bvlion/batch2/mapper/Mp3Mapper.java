@@ -17,12 +17,13 @@ public interface Mp3Mapper {
 	void mp3insert(
 			@Param("file_name") int fileName,
 			@Param("song_name") String songName,
-			@Param("song_url") String songUrl
+			@Param("song_url") String songUrl,
+			@Param("volume") int volume
 	);
 
 	List<Mp3Entity> allMp3Data();
 
-	String songName(@Param("file_name") int fileName);
+	String selectSongName(@Param("file_name") int fileName);
 
-	int fileName(@Param("song_name") String songName);
+	Mp3Entity selectDataFromSongName(@Param("song_name") String songName);
 }

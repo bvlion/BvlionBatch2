@@ -10,4 +10,5 @@ import lombok.Setter;
 public class Mp3Entity {
 	private int fileName;
 	private String songName;
+	private int volume;
 }

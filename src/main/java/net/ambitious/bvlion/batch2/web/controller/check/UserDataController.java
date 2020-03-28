@@ -8,7 +8,6 @@ import net.ambitious.bvlion.batch2.entity.RealtimeSettingEntity;
 import net.ambitious.bvlion.batch2.mapper.RealtimeSettingMapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
-import net.ambitious.bvlion.batch2.util.AppParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +23,6 @@ public class UserDataController {
 	@NonNull
 	private final RealtimeSettingMapper realtimeSettingMapper;
 
-	@NonNull
-	private final AppParams appParams;
-
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/realtime_setting/select", method = RequestMethod.GET)
 	public RealtimeSettingEntity selectRealtimeSetting() {
@@ -36,7 +32,10 @@ public class UserDataController {
 	@Transactional
 	@RequestMapping(value = "/fcm_register/{user}/{fcmId}", method = RequestMethod.POST)
 	public int saveUserFcm(@PathVariable String user, @PathVariable String fcmId) {
-		return this.userMapper.fcmUpdate(user, fcmId);
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference ref = database.getReference("tokens/" + user);
+		ref.setValueAsync(fcmId);
+		return this.userMapper.fcmUpdate(user);
 	}
 
 	@Transactional
@@ -68,11 +67,7 @@ public class UserDataController {
 			ref.setValueAsync(cameraMode);
 			this.realtimeSettingMapper.updateMonitoringMode(cameraMode);
 
-			AccessUtil.sendFcm(
-					AccessUtil.createTopicMessage("empty", "empty", "monitor"),
-					appParams,
-					log
-			);
+			AccessUtil.sendTopicMessage("empty", "empty", "monitor");
 		}
 	}
 
@@ -105,6 +100,6 @@ public class UserDataController {
 				message = errorMessage;
 		}
 
-		AccessUtil.sendFcm(AccessUtil.createTopicMessage("エアコン起動情報", message, "aircon"), appParams, log);
+		AccessUtil.sendTopicMessage("エアコン起動情報", message, "aircon");
 	}
 }

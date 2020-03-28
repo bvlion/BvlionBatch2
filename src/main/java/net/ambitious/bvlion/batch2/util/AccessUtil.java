@@ -1,7 +1,5 @@
 package net.ambitious.bvlion.batch2.util;
 
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jcraft.jsch.JSchException;
@@ -62,12 +60,12 @@ public class AccessUtil {
 
 	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume) {
 		if (!appParams.isProduction()) {
-			log.info(message + ":OK");
+			log.info(String.format("{message: \"%s\", volume: %s}", message, volume));
 			return;
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(message + " … " + getYmdhms() + " … " + volume);
+		ref.setValueAsync(String.format("%s … %s … %s", message, getYmdhms(), volume));
     }
 
 	public static String convertEn2Ja(String enWord, Logger log) {
@@ -233,75 +231,24 @@ public class AccessUtil {
 				).findFirst().orElse(cal);
 	}
 
-	public static void sendFcm(String message, AppParams appParams, Logger log) {
-		try {
-			var url = new URL("https://fcm.googleapis.com/v1/projects/" + appParams.getFirebaseId() + "/messages:send");
-			var con = (HttpURLConnection) url.openConnection();
-			con.setRequestMethod("POST");
-			con.setRequestProperty("Authorization", "Bearer " + getAccessToken(appParams));
-			con.setRequestProperty("Content-Type", "application/json; UTF-8");
-			con.setDoOutput(true);
-
-			con.connect();
-
-			try (var ps = new PrintStream(con.getOutputStream(), false, StandardCharsets.UTF_8)) {
-				ps.print(message);
-			}
-
-			try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
-				log.info(br.lines().collect(Collectors.joining("\n")));
-			}
-
-		} catch (IOException e) {
-			log.error("Access Error", e);
-		}
+	public static void sendTokenMessage(
+			List<String> tos, String title, String body, String userName, String channelId) {
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference ref = database.getReference("fcm/token");
+		ref.child("title").setValueAsync(title);
+		ref.child("body").setValueAsync(body);
+		ref.child("channelId").setValueAsync(channelId);
+		ref.child("userName").setValueAsync(userName);
+		ref.child("to").setValueAsync(String.join(",", tos));
+		ref.child("date").setValueAsync(getYmdhms());
 	}
 
-	private static String getAccessToken(AppParams appParams) throws IOException {
-		var googleCredential = GoogleCredential
-				.fromStream(new URL(appParams.getAdminSdkJsonUrl()).openStream())
-				.createScoped(Collections.singletonList("https://www.googleapis.com/auth/firebase.messaging"));
-		googleCredential.refreshToken();
-		return googleCredential.getAccessToken();
-	}
-
-	public static String createTokenMessage(
-			String token, String title, String body, String userName, String channelId) {
-		try {
-			var data = new JSONObject();
-			data.put("body", body);
-			data.put("title", title);
-			data.put("user", userName);
-			data.put("channelId", channelId);
-			var message = new JSONObject();
-			message.put("token", token);
-			message.put("data", data);
-			message.put("android", new JSONObject().put("priority", "high"));
-			var main = new JSONObject();
-			main.put("message", message);
-			return main.toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
-
-	public static String createTopicMessage(String title, String body, String channelId) {
-		try {
-			var data = new JSONObject();
-			data.put("body", body);
-			data.put("title", title);
-			data.put("channelId", channelId);
-			var message = new JSONObject();
-			message.put("topic", "server_message");
-			message.put("data", data);
-			message.put("android", new JSONObject().put("priority", "high"));
-			var main = new JSONObject();
-			main.put("message", message);
-			return main.toString();
-		} catch (JSONException e) {
-			e.printStackTrace();
-			return null;
-		}
+	public static void sendTopicMessage(String title, String body, String channelId) {
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		DatabaseReference ref = database.getReference("fcm/topic");
+		ref.child("title").setValueAsync(title);
+		ref.child("body").setValueAsync(body);
+		ref.child("channelId").setValueAsync(channelId);
+		ref.child("date").setValueAsync(getYmdhms());
 	}
 }
