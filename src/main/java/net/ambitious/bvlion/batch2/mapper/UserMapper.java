@@ -9,15 +9,13 @@ import java.util.List;
 @Repository
 @Mapper
 public interface UserMapper {
-    int fcmUpdate(@Param("user") String user, @Param("fcm_id") String fcmId);
+    int fcmUpdate(@Param("user") String user);
 
     void userModeUpdate(@Param("user") String user, @Param("mode") int mode);
 
     int userCount();
 
-    List<String> otherFcmTokens(@Param("user") String user);
-
-    String targetUsersFcmToken(@Param("user") String user);
+    List<String> fcmSendUsers(@Param("user") String user);
 
     List<String> allUsers();
 }

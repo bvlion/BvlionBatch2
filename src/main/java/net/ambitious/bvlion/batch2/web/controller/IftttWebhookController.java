@@ -15,7 +15,6 @@ import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
-import net.ambitious.bvlion.batch2.web.exception.NotFoundException;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.http.MediaType;
@@ -24,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -82,13 +82,15 @@ public class IftttWebhookController {
 				.findFirst().orElse(null);
 
 		String message;
+		int volume = 40;
 		if (entity == null) {
 			message = songName + "、は まだ登録がないようでござるよ。";
 		} else {
 			message = String.format(appParams.getMp3format(), entity.getFileName());
+			volume = entity.getVolume();
 		}
 
-		AccessUtil.postGoogleHome(message, log, appParams, 40);
+		AccessUtil.postGoogleHome(message, log, appParams, volume);
 	}
 
 	@RequestMapping(value = "/speak-text", method = RequestMethod.PUT)
@@ -148,15 +150,12 @@ public class IftttWebhookController {
 			return "{}";
 		}
 
-		var fcmTokens = userMapper.otherFcmTokens(userName);
-		fcmTokens.forEach(fcmToken -> AccessUtil.sendFcm(
-				AccessUtil.createTokenMessage(
-						fcmToken,
-						"Slack代理通知",
-						text.replace("&lt;", "<").replace("&gt;", ">"),
-						userName,
-						"slack-proxy"
-				), appParams, log)
+		AccessUtil.sendTokenMessage(
+				userMapper.fcmSendUsers(userName),
+				"Slack代理通知",
+				text.replace("&lt;", "<").replace("&gt;", ">"),
+				userName,
+				"slack-proxy"
 		);
 
 		return "{}";
@@ -164,22 +163,18 @@ public class IftttWebhookController {
 
 	@RequestMapping(value = "/alarm-notification/{user}", method = RequestMethod.PUT)
 	public void alarmNotification(@PathVariable String user) {
-		var fcmToken = userMapper.targetUsersFcmToken(user);
-		if (StringUtils.isBlank(fcmToken)) {
-			throw new NotFoundException();
-		}
-		AccessUtil.sendFcm(AccessUtil.createTokenMessage(
-				fcmToken,
+		AccessUtil.sendTokenMessage(
+				List.of(user),
 				"empty",
 				"empty",
-				"empty",
-				"alarm"
-		), appParams, log);
+			"empty",
+			"alarm"
+		);
 	}
 
 	@RequestMapping(value = "/youtube-notification/{fileName}", method = RequestMethod.PUT)
 	public void youtubeNotification(@PathVariable int fileName) {
-	    String songName = mp3Mapper.songName(fileName);
+	    String songName = mp3Mapper.selectSongName(fileName);
 		try {
 			new SlackHttpPost(
 					"youtube-dl",
@@ -243,10 +238,12 @@ public class IftttWebhookController {
 			return "{\"text\":\"「" + songName + "」は既に存在しています。\"}";
 		}
 
+		int volume = 40;
 		if (songName.equals("ねむり")) {
 			int nextValue = autoIncrementsMapper.nextValue(AutoIncrementEnum.SLEEP_MUSIC.getType());
 			songName += " " + nextValue;
 			autoIncrementsMapper.insert(nextValue, AutoIncrementEnum.SLEEP_MUSIC.getType());
+			volume = 25;
 		}
 
 		var nextFileName = mp3Mapper.nextFileName();
@@ -256,26 +253,27 @@ public class IftttWebhookController {
 		ref.child("name").setValueAsync(String.valueOf(nextFileName));
 		ref.child("url").setValueAsync(url);
 
-		mp3Mapper.mp3insert(nextFileName, songName, url);
+		mp3Mapper.mp3insert(nextFileName, songName, url, volume);
 
 		return "{}";
 	}
 
 	@RequestMapping(value = "/play-sleep-music", method = RequestMethod.PUT)
 	public void playSleepMusicWebhook()  {
+		var entity = mp3Mapper.selectDataFromSongName(
+				"ねむり "
+						+ autoIncrementsMapper.randomValue(
+						AutoIncrementEnum.SLEEP_MUSIC.getType()
+				)
+		);
 		AccessUtil.postGoogleHome(
 				String.format(
 						appParams.getMp3format(),
-						mp3Mapper.fileName(
-								"ねむり "
-										+ autoIncrementsMapper.randomValue(
-												AutoIncrementEnum.SLEEP_MUSIC.getType()
-								)
-						)
+						entity.getFileName()
 				),
 				log,
 				appParams,
-				25
+				entity.getVolume()
 		);
 	}
 

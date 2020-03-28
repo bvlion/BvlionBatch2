@@ -78,11 +78,7 @@ public class OriginalBatchController {
 
         if (message.trim().length() > 0) {
             log.info("DatingBatch:" + message);
-            AccessUtil.sendFcm(
-                    AccessUtil.createTopicMessage("記念日通知", message + "おめでとう(*･ω･)ﾉ", "dating"),
-                    appParams,
-                    log
-            );
+            AccessUtil.sendTopicMessage("記念日通知", message + "おめでとう(*･ω･)ﾉ", "dating");
         }
     }
 
@@ -210,11 +206,7 @@ public class OriginalBatchController {
 
     @RequestMapping(value = "/motionDetectionNotification", method = RequestMethod.GET)
     public void motionDetectionNotification() {
-        AccessUtil.sendFcm(
-                AccessUtil.createTopicMessage("empty", "empty", "detection"),
-                appParams,
-                log
-        );
+        AccessUtil.sendTopicMessage("empty", "empty", "detection");
     }
 
     @RequestMapping(value = "/mail-api", method = RequestMethod.PUT)

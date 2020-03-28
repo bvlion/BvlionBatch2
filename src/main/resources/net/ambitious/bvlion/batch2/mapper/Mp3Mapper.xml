@@ -5,6 +5,7 @@
     <resultMap id="entityResultMap" type="net.ambitious.bvlion.batch2.entity.Mp3Entity">
         <result property="fileName" column="file_name" />
         <result property="songName" column="song_name" />
+        <result property="volume" column="volume" />
     </resultMap>
 
     <select id="hasSongName" resultType="boolean">
@@ -17,20 +18,20 @@
 
     <insert id="mp3insert">
         INSERT INTO mp3
-        (file_name, song_name, song_url)
+        (file_name, song_name, song_url, volume)
         VALUES
-        (#{file_name}, #{song_name}, #{song_url})
+        (#{file_name}, #{song_name}, #{song_url}, #{volume})
     </insert>
 
     <select id="allMp3Data" resultMap="entityResultMap">
-        SELECT file_name, song_name FROM mp3
+        SELECT file_name, song_name, volume FROM mp3
     </select>
 
-    <select id="songName" resultType="string">
+    <select id="selectSongName" resultType="string">
         SELECT song_name FROM mp3 WHERE file_name = #{file_name}
     </select>
 
-    <select id="fileName" resultType="int">
-        SELECT file_name FROM mp3 WHERE song_name = #{song_name}
+    <select id="selectDataFromSongName" resultMap="entityResultMap">
+        SELECT file_name, song_name, volume FROM mp3 WHERE song_name = #{song_name}
     </select>
 </mapper>
