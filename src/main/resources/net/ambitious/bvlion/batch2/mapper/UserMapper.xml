@@ -15,7 +15,7 @@
     </update>
 
     <select id="userCount" resultType="int">
-        SELECT COUNT(*) FROM users WHERE fcm_id != '' AND in_home_flag = 1
+        SELECT COUNT(*) FROM users WHERE in_home_flag = 1
     </select>
 
     <select id="fcmSendUsers" resultType="string">

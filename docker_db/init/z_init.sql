@@ -616,8 +616,8 @@ VALUES
 	(9, 'hanzoumon-line-bot', '東京メトロ半蔵門線', 0, 1),
 	(10, 'ooedo-line-bot', '都営大江戸線', 1, 1);
 
-INSERT INTO `users` (`user_name`, `fcm_id`, `in_home_flag`)
+INSERT INTO `users` (`user_name`, `in_home_flag`)
 VALUES
-	('gudetama', '', 0),
-	('mai', 'diRUslVjzEw:APA91bF1ULcCpC6Z7GAZXC28yqXewNKus5IdT1fqfUy87lhgizzezbSshzQdc2wJIyWQeK3HJ-45xrRHolnKASPbtGGPYa9jZyYbtNglbC9jgtLtH7clQ1CWiJ3ig25RvdrcyGsn_BQr', 1),
-	('satoshi', 'du2H84XoZCg:APA91bHaF1mkm5UStF0vVkhbSJngoLKOx3-IghfGs7xUFeYbFochGlpRjvWF-QLmT_ni_HywZT1JnvzgqO6iW4k-GVsuiltL4P5POmC46UT-fgFjAVKfMaafY_dAFf-fR8zz4zC507RQ', 1);
+	('gudetama', 0),
+	('mai', 1),
+	('satoshi', 1);
