@@ -126,10 +126,6 @@ workflows:
   build_script:
     jobs:
       - build:
-          filters:
-            branches:
-              ignore:
-                - master
       - report:
           requires:
             - build
