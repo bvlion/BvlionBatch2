@@ -95,31 +95,31 @@ jobs:
     environment:
       JVM_OPTS: -Xmx3200m
 
-      steps:
-        - checkout
+    steps:
+      - checkout
 
-        - run:
-            name: SetUp Build
-            command: chmod 755 gradlew
+      - run:
+          name: SetUp Build
+          command: chmod 755 gradlew
 
-        - restore_cache:
-            key: dependencies-{{ checksum "build.gradle" }}
+      - restore_cache:
+          key: dependencies-{{ checksum "build.gradle" }}
 
-        - run:
-            name: gradle dependencies
-            command: ./gradlew dependencies
+      - run:
+          name: gradle dependencies
+          command: ./gradlew dependencies
 
-        - save_cache:
-            paths: ~/.gradle
-            key: dependencies-{{ checksum "build.gradle" }}
+      - save_cache:
+          paths: ~/.gradle
+          key: dependencies-{{ checksum "build.gradle" }}
 
-        - run:
-            name: Build apk
-            command: ./gradlew clean test
+      - run:
+          name: Build apk
+          command: ./gradlew clean test
 
-        - run:
-            name: Heroku Git Push
-            command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+      - run:
+          name: Heroku Git Push
+          command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 workflows:
   version: 2
