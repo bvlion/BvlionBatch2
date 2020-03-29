@@ -1,13 +1,5 @@
 version: 2.1
 
-parameters:
-  run_build:
-    type: boolean
-    default: false
-  version:
-    type: string
-    default: test
-
 jobs:
   build:
     docker:
@@ -17,47 +9,43 @@ jobs:
       JVM_OPTS: -Xmx3200m
 
     steps:
-      - run: echo "build run_build is << pipeline.parameters.run_build >>"
-      - when:
-          condition: << pipeline.parameters.run_build >>
-          steps:
-            - checkout
+      - checkout
 
-            - run:
-                name: SetUp Build
-                command: chmod 755 gradlew
+      - run:
+          name: SetUp Build
+          command: chmod 755 gradlew
 
-            - restore_cache:
-                key: dependencies-{{ checksum "build.gradle" }}
+      - restore_cache:
+          key: dependencies-{{ checksum "build.gradle" }}
 
-            - run:
-                name: gradle dependencies
-                command: ./gradlew dependencies
+      - run:
+          name: gradle dependencies
+          command: ./gradlew dependencies
 
-            - save_cache:
-                paths: ~/.gradle
-                key: dependencies-{{ checksum "build.gradle" }}
+      - save_cache:
+          paths: ~/.gradle
+          key: dependencies-{{ checksum "build.gradle" }}
 
-            - run:
-                name: Build apk
-                command: ./gradlew clean build
+      - run:
+          name: Build apk
+          command: ./gradlew clean build
 
-            - run:
-                name: Report file move
-                command: |
-                  mv build/reports/checkstyle report/functions/static/checkstyle
-                  mv build/reports/spotbugs report/functions/static/spotbugs
-                  mv build/reports/tests report/functions/static/tests
-                  mkdir /tmp/workspace
-                  mv report /tmp/workspace
+      - run:
+          name: Report file move
+          command: |
+            mv build/reports/checkstyle report/functions/static/checkstyle
+            mv build/reports/spotbugs report/functions/static/spotbugs
+            mv build/reports/tests report/functions/static/tests
+            mkdir /tmp/workspace
+            mv report /tmp/workspace
 
-            - store_test_results:
-                path: build/test-results
+      - store_test_results:
+          path: build/test-results
 
-            - persist_to_workspace:
-                root: /tmp/workspace
-                paths:
-                  - report
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - report
 
 
   report:
@@ -65,45 +53,40 @@ jobs:
       - image: circleci/node:10.16.3
 
     steps:
-      - run: echo "report run_build is << pipeline.parameters.run_build >>"
-      - when:
-          condition: << pipeline.parameters.run_build >>
-          steps:
-            - attach_workspace:
-                at: /tmp/workspace
+      - attach_workspace:
+          at: /tmp/workspace
 
-            - run:
-                name: Report file move
-                command: |
-                  mv /tmp/workspace/report report
+      - run:
+          name: Report file move
+          command: |
+            mv /tmp/workspace/report report
 
-            - restore_cache:
-                keys:
-                  - v1-dependencies-{{ checksum "report/functions/package.json" }}
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "report/functions/package.json" }}
 
-            - run: cd report/functions && npm install
+      - run: cd report/functions && npm install
 
-            - run:
-                name: 'Install Dependencies'
-                command: npm install --save-dev firebase-tools
+      - run:
+          name: 'Install Dependencies'
+          command: npm install --save-dev firebase-tools
 
-            - save_cache:
-                paths:
-                  - report/functions/node_modules
-                key: v1-dependencies-{{ checksum "report/functions/package.json" }}
+      - save_cache:
+          paths:
+            - report/functions/node_modules
+          key: v1-dependencies-{{ checksum "report/functions/package.json" }}
 
-            - run:
-                name: 'set .firebaserc id & pass'
-                command: |
-                  echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
-                  sed -i -e "s/username_replace/$BASIC_USER/" report/functions/index.js
-                  sed -i -e "s/password_replace/$BASIC_PASS/" report/functions/index.js
-                  sed -i -e "s/TESTED_DATE/$(TZ=UTC-9 date '+%Y\/%m\/%d %H:%M:%S')/" report/functions/static/index.html
+      - run:
+          name: 'set .firebaserc id & pass'
+          command: |
+            echo -e "{\n  {\n    \"projects\": {\n        \"default\": \"$FIREBASE_PJ\"\n  }\n}" > report/.firebaserc
+            sed -i -e "s/username_replace/$BASIC_USER/" report/functions/index.js
+            sed -i -e "s/password_replace/$BASIC_PASS/" report/functions/index.js
+            sed -i -e "s/TESTED_DATE/$(TZ=UTC-9 date '+%Y\/%m\/%d %H:%M:%S')/" report/functions/static/index.html
 
-            - run:
-                name: 'Deploy to Firebase'
-                command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
-
+      - run:
+          name: 'Deploy to Firebase'
+          command: cd report && ../node_modules/.bin/firebase deploy --project "$FIREBASE_PJ" --token "$FIREBASE_TOKEN"
 
   release:
     docker:
@@ -112,35 +95,31 @@ jobs:
     environment:
       JVM_OPTS: -Xmx3200m
 
-    steps:
-      - run: echo "run_build is << pipeline.parameters.run_build >>"
-      - when:
-          condition: << pipeline.parameters.run_build >>
-          steps:
-            - checkout
+      steps:
+        - checkout
 
-            - run:
-                name: SetUp Build
-                command: chmod 755 gradlew
+        - run:
+            name: SetUp Build
+            command: chmod 755 gradlew
 
-            - restore_cache:
-                key: dependencies-{{ checksum "build.gradle" }}
+        - restore_cache:
+            key: dependencies-{{ checksum "build.gradle" }}
 
-            - run:
-                name: gradle dependencies
-                command: ./gradlew dependencies
+        - run:
+            name: gradle dependencies
+            command: ./gradlew dependencies
 
-            - save_cache:
-                paths: ~/.gradle
-                key: dependencies-{{ checksum "build.gradle" }}
+        - save_cache:
+            paths: ~/.gradle
+            key: dependencies-{{ checksum "build.gradle" }}
 
-            - run:
-                name: Build apk
-                command: ./gradlew clean test
+        - run:
+            name: Build apk
+            command: ./gradlew clean test
 
-            - run:
-                name: Heroku Git Push
-                command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+        - run:
+            name: Heroku Git Push
+            command: git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 workflows:
   version: 2
