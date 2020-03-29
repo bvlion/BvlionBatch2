@@ -125,11 +125,7 @@ workflows:
   version: 2
   build_script:
     jobs:
-      - build:
-          filters:
-            branches:
-              ignore:
-                - master
+      - build
       - report:
           requires:
             - build
