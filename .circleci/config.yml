@@ -125,7 +125,7 @@ workflows:
   version: 2
   build_script:
     jobs:
-      - build:
+      - build
       - report:
           requires:
             - build
