@@ -129,6 +129,10 @@ workflows:
       - report:
           requires:
             - build
+          filters:
+            branches:
+              only:
+                - master
   release_script:
     jobs:
       - release:
