@@ -7,18 +7,10 @@ admin.initializeApp(functions.config().firebase)
 const app = express()
 app.all('/*', basicAuth((user, password) => user === "username_replace" && password === "password_replace"))
 app.use(express.static(__dirname + '/static/'))
-exports.app = functions.https.onRequest(app)
 
 const db = admin.database()
 
-let tokenEnable = false
-let topicEnable = false
-
-db.ref('/fcm/token/date').on('value', (changedSnapshot) => {
-  if (!tokenEnable) {
-    tokenEnable = true
-    return
-  }
+app.use('/push_message/token', (req, res) => {
   db.ref('/fcm/token').once('value', (snapshot) => {
     const values = snapshot.val()
 
@@ -46,20 +38,16 @@ db.ref('/fcm/token/date').on('value', (changedSnapshot) => {
 
       admin.messaging().sendMulticast(message)
         .then((response) => {
-          console.log('Successfully sent message:', response)
+          res.json({"message": 'Successfully sent message:' + JSON.stringify(response)})
         })
         .catch((error) => {
-          console.log('Error sending message:', error)
+          res.json({"message": 'Error sending message:' + JSON.stringify(error)})
         })
     })
   })
 })
 
-db.ref('/fcm/topic/date').on('value', (changedSnapshot) => {
-  if (!topicEnable) {
-    topicEnable = true
-    return
-  }
+app.use('/push_message/topic', (req, res) => {
   db.ref('/fcm/topic').once('value', (snapshot) => {
     const values = snapshot.val()
 
@@ -76,10 +64,12 @@ db.ref('/fcm/topic/date').on('value', (changedSnapshot) => {
 
     admin.messaging().send(message)
       .then((response) => {
-        console.log('Successfully sent topic message:', response)
+        res.json({"message": 'Successfully sent topic message:' + JSON.stringify(response)})
       })
       .catch((error) => {
-        console.log('Error sending topic message:', error)
+        res.json({"message": 'Error sending topic message:' + JSON.stringify(error)})
       })
   })
 })
+
+exports.app = functions.https.onRequest(app)
