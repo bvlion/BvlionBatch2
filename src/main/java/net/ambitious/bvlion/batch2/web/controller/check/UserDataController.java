@@ -8,6 +8,7 @@ import net.ambitious.bvlion.batch2.entity.RealtimeSettingEntity;
 import net.ambitious.bvlion.batch2.mapper.RealtimeSettingMapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
+import net.ambitious.bvlion.batch2.util.AppParams;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -22,6 +23,9 @@ public class UserDataController {
 
 	@NonNull
 	private final RealtimeSettingMapper realtimeSettingMapper;
+
+	@NonNull
+	private final AppParams appParams;
 
 	@Transactional(readOnly = true)
 	@RequestMapping(value = "/realtime_setting/select", method = RequestMethod.GET)
@@ -67,7 +71,8 @@ public class UserDataController {
 			ref.setValueAsync(cameraMode);
 			this.realtimeSettingMapper.updateMonitoringMode(cameraMode);
 
-			AccessUtil.sendTopicMessage("empty", "empty", "monitor");
+			AccessUtil.sendTopicMessage("empty", "empty", "monitor",
+					appParams.getFirebaseFunctionUrl());
 		}
 	}
 
@@ -100,6 +105,7 @@ public class UserDataController {
 				message = errorMessage;
 		}
 
-		AccessUtil.sendTopicMessage("エアコン起動情報", message, "aircon");
+		AccessUtil.sendTopicMessage("エアコン起動情報", message, "aircon",
+				appParams.getFirebaseFunctionUrl());
 	}
 }

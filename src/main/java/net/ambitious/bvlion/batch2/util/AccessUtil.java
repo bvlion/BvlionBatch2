@@ -3,6 +3,7 @@ package net.ambitious.bvlion.batch2.util;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jcraft.jsch.JSchException;
+import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
 import net.ambitious.bvlion.batch2.enums.ExecTimeEnum;
 import org.apache.commons.lang3.StringUtils;
@@ -31,6 +32,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class AccessUtil {
 
 	private static final String E2K_URL = "https://www.sljfaq.org/cgi/e2k.cgi?o=json&word=%s";
@@ -232,23 +234,58 @@ public class AccessUtil {
 	}
 
 	public static void sendTokenMessage(
-			List<String> tos, String title, String body, String userName, String channelId) {
+			List<String> tos, String title, String body, String userName,
+			String channelId, String url) {
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("fcm/token");
-		ref.child("title").setValueAsync(title);
-		ref.child("body").setValueAsync(body);
-		ref.child("channelId").setValueAsync(channelId);
-		ref.child("userName").setValueAsync(userName);
-		ref.child("to").setValueAsync(String.join(",", tos));
-		ref.child("date").setValueAsync(getYmdhms());
+		Map<String, String> data = new HashMap<>();
+		data.put("title", title);
+		data.put("body", body);
+		data.put("channelId", channelId);
+		data.put("userName", userName);
+		data.put("date", getYmdhms());
+		data.put("to", String.join(",", tos));
+		ref.setValue(data, (error, reference) -> {
+			if (error != null) {
+				try {
+					log.info("Send token response is " + touchFirebaseFunctions(url + "token"));
+				} catch (IOException e) {
+					log.warn("Send Topic Error", e);
+				}
+			}
+		});
 	}
 
-	public static void sendTopicMessage(String title, String body, String channelId) {
+	public static void sendTopicMessage(String title, String body, String channelId, String url) {
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("fcm/topic");
-		ref.child("title").setValueAsync(title);
-		ref.child("body").setValueAsync(body);
-		ref.child("channelId").setValueAsync(channelId);
-		ref.child("date").setValueAsync(getYmdhms());
+		Map<String, String> data = new HashMap<>();
+		data.put("title", title);
+		data.put("body", body);
+		data.put("channelId", channelId);
+		data.put("date", getYmdhms());
+		ref.setValue(data, (error, reference) -> {
+			if (error != null) {
+				try {
+					log.info("Send Topic response is " + touchFirebaseFunctions(url + "topic"));
+				} catch (IOException e) {
+				    log.warn("Send Topic Error", e);
+				}
+			}
+		});
+	}
+
+	private static String touchFirebaseFunctions(String url) throws IOException {
+		var uri = new URL(url);
+		var con = (HttpURLConnection) uri.openConnection();
+		con.setRequestMethod("POST");
+		con.setUseCaches(false);
+		con.setDoInput(true);
+		con.setDoOutput(true);
+		con.connect();
+
+		try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+			return br.lines().collect(Collectors.joining("\n"));
+		}
 	}
 }
