@@ -235,7 +235,7 @@ public class AccessUtil {
 
 	public static void sendTokenMessage(
 			List<String> tos, String title, String body, String userName,
-			String channelId, String url) {
+			String channelId, String url, String basic) {
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("fcm/token");
 		Map<String, String> data = new HashMap<>();
@@ -248,7 +248,7 @@ public class AccessUtil {
 		ref.setValue(data, (error, reference) -> {
 			if (error != null) {
 				try {
-					log.info("Send token response is " + touchFirebaseFunctions(url + "token"));
+					log.info("Send token response is " + touchFirebaseFunctions(url + "token", basic));
 				} catch (IOException e) {
 					log.warn("Send Topic Error", e);
 				}
@@ -256,7 +256,7 @@ public class AccessUtil {
 		});
 	}
 
-	public static void sendTopicMessage(String title, String body, String channelId, String url) {
+	public static void sendTopicMessage(String title, String body, String channelId, String url, String basic) {
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("fcm/topic");
 		Map<String, String> data = new HashMap<>();
@@ -267,7 +267,7 @@ public class AccessUtil {
 		ref.setValue(data, (error, reference) -> {
 			if (error != null) {
 				try {
-					log.info("Send Topic response is " + touchFirebaseFunctions(url + "topic"));
+					log.info("Send Topic response is " + touchFirebaseFunctions(url + "topic", basic));
 				} catch (IOException e) {
 				    log.warn("Send Topic Error", e);
 				}
@@ -275,14 +275,11 @@ public class AccessUtil {
 		});
 	}
 
-	private static String touchFirebaseFunctions(String url) throws IOException {
+	private static String touchFirebaseFunctions(String url, String basic) throws IOException {
 		var uri = new URL(url);
 		var con = (HttpURLConnection) uri.openConnection();
-		con.setRequestMethod("POST");
+		con.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString(basic.getBytes(StandardCharsets.UTF_8)));
 		con.setUseCaches(false);
-		con.setDoInput(true);
-		con.setDoOutput(true);
-		con.connect();
 
 		try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 			return br.lines().collect(Collectors.joining("\n"));

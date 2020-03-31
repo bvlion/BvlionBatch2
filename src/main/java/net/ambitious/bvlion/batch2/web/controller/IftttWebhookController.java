@@ -156,7 +156,8 @@ public class IftttWebhookController {
 				text.replace("&lt;", "<").replace("&gt;", ">"),
 				userName,
 				"slack-proxy",
-				appParams.getFirebaseFunctionUrl()
+				appParams.getFirebaseFunctionUrl(),
+				appParams.getFirebaseBasicAuth()
 		);
 
 		return "{}";
@@ -170,7 +171,8 @@ public class IftttWebhookController {
 				"empty",
 				"empty",
 				"alarm",
-				appParams.getFirebaseFunctionUrl()
+				appParams.getFirebaseFunctionUrl(),
+				appParams.getFirebaseBasicAuth()
 		);
 	}
 
