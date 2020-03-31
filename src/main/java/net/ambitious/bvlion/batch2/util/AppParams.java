@@ -31,7 +31,8 @@ public class AppParams {
 
 	private String mailHost;
 	private String mailUser;
-   	private String mailPassword;
+	private String mailPassword;
 
-   	private String firebaseFunctionUrl;
+	private String firebaseFunctionUrl;
+	private String firebaseBasicAuth;
 }

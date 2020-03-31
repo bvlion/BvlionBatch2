@@ -79,7 +79,7 @@ public class OriginalBatchController {
         if (message.trim().length() > 0) {
             log.info("DatingBatch:" + message);
             AccessUtil.sendTopicMessage("記念日通知", message + "おめでとう(*･ω･)ﾉ", "dating",
-                    appParams.getFirebaseFunctionUrl());
+                    appParams.getFirebaseFunctionUrl(), appParams.getFirebaseBasicAuth());
         }
     }
 
@@ -208,7 +208,7 @@ public class OriginalBatchController {
     @RequestMapping(value = "/motionDetectionNotification", method = RequestMethod.GET)
     public void motionDetectionNotification() {
         AccessUtil.sendTopicMessage("empty", "empty", "detection",
-                appParams.getFirebaseFunctionUrl());
+                appParams.getFirebaseFunctionUrl(), appParams.getFirebaseBasicAuth());
     }
 
     @RequestMapping(value = "/mail-api", method = RequestMethod.PUT)

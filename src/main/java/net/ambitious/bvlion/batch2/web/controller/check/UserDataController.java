@@ -72,7 +72,7 @@ public class UserDataController {
 			this.realtimeSettingMapper.updateMonitoringMode(cameraMode);
 
 			AccessUtil.sendTopicMessage("empty", "empty", "monitor",
-					appParams.getFirebaseFunctionUrl());
+					appParams.getFirebaseFunctionUrl(), appParams.getFirebaseBasicAuth());
 		}
 	}
 
@@ -106,6 +106,6 @@ public class UserDataController {
 		}
 
 		AccessUtil.sendTopicMessage("エアコン起動情報", message, "aircon",
-				appParams.getFirebaseFunctionUrl());
+				appParams.getFirebaseFunctionUrl(), appParams.getFirebaseBasicAuth());
 	}
 }
