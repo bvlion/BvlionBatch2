@@ -246,7 +246,7 @@ public class AccessUtil {
 		data.put("date", getYmdhms());
 		data.put("to", String.join(",", tos));
 		ref.setValue(data, (error, reference) -> {
-			if (error != null) {
+			if (error == null) {
 				try {
 					log.info("Send token response is " + touchFirebaseFunctions(url + "token", basic));
 				} catch (IOException e) {
@@ -265,7 +265,7 @@ public class AccessUtil {
 		data.put("channelId", channelId);
 		data.put("date", getYmdhms());
 		ref.setValue(data, (error, reference) -> {
-			if (error != null) {
+			if (error == null) {
 				try {
 					log.info("Send Topic response is " + touchFirebaseFunctions(url + "topic", basic));
 				} catch (IOException e) {
