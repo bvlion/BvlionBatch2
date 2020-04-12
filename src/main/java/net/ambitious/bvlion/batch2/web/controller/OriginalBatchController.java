@@ -195,11 +195,12 @@ public class OriginalBatchController {
             @RequestParam("slackChannel") String slackChannel,
             @RequestParam("text") String text
     ) throws IOException {
+        String[] urls = url.split("/");
         if (appParams.isProduction()) {
             new SlackBinaryPost.Builder()
                     .channels(slackChannel)
                     .title(text)
-                    .fileName(AccessUtil.getYmdhms() + ".png")
+                    .fileName(urls[urls.length - 1])
                     .fileData(AccessUtil.getBinaryBytes(url))
                     .build(appParams.getSlackToken()).post(appParams);
         }
