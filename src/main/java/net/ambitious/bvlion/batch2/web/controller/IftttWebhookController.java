@@ -66,6 +66,19 @@ public class IftttWebhookController {
 		return "Set Holiday " + setDate + " to " + holidayType;
 	}
 
+	@RequestMapping(value = "/normal-holiday-setting/{holidayType}", method = RequestMethod.PUT)
+	public String normalHolidaySetting(@PathVariable int holidayType)  {
+		var cal = Calendar.getInstance(AccessUtil.TOKYO);
+		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
+			holidayType = 1;
+		}
+
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		database.getReference("holiday").setValueAsync(holidayType);
+
+		return "Set Normal Holiday " + AccessUtil.getNow("yyyy-MM-dd") + " to " + holidayType;
+	}
+
 	@RequestMapping(value = "/play-music", method = RequestMethod.PUT)
 	public void playMusicWebhook(@RequestBody Map<String, String> postData)  {
 		final var songName = postData.get("data");
