@@ -120,18 +120,6 @@ public class TimesController {
 		});
 	}
 
-	@RequestMapping(value = "/temperature-detection", method = RequestMethod.PUT)
-	public void temperatureDetection() {
-		if (!holidayMapper.isHoliday()) {
-			AccessUtil.postGoogleHome(
-					"おはようございます。検温は済んでいますか？",
-					log,
-					appParams,
-					55
-			);
-		}
-	}
-
 	@RequestMapping(value = "/timer", method = RequestMethod.PUT)
 	public void timer() {
 		var cal = Calendar.getInstance(AccessUtil.TOKYO);
