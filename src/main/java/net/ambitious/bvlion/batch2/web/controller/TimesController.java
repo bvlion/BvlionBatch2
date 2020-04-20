@@ -1,10 +1,10 @@
 package net.ambitious.bvlion.batch2.web.controller;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.*;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.ambitious.bvlion.batch2.enums.CheckHolidayTypeEnum;
 import net.ambitious.bvlion.batch2.enums.HolidayEnum;
 import net.ambitious.bvlion.batch2.enums.TimerDateEnum;
 import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
@@ -14,9 +14,11 @@ import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
@@ -86,6 +88,36 @@ public class TimesController {
 				message,
 				"http://mirai.coopnet.or.jp/event/area_info/chiba/img/hopetan_cafe_01.png"
 		).send(appParams);
+	}
+
+	@RequestMapping(value = "/google-home-notification", method = RequestMethod.PUT)
+	public void googleHomeNotification(
+			@RequestParam("text") String text,
+			@RequestParam(value = "volume", required = false, defaultValue = "45") int volume,
+			@RequestParam(value = "check", required = false, defaultValue = "0") int checkType) {
+		if (checkType == CheckHolidayTypeEnum.HOME_HOLIDAY_CHECK.getType() && holidayMapper.isHoliday()) {
+			return;
+		}
+		FirebaseDatabase database = FirebaseDatabase.getInstance();
+		database.getReference("holiday").addValueEventListener(new ValueEventListener() {
+			@Override
+			public void onDataChange(DataSnapshot dataSnapshot) {
+				if (!(checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
+						&& NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1)) {
+					AccessUtil.postGoogleHome(
+							text,
+							log,
+							appParams,
+							volume
+					);
+				}
+			}
+
+			@Override
+			public void onCancelled(DatabaseError databaseError) {
+			    log.warn("googleHomeNotification#onCancelled", databaseError.toException());
+			}
+		});
 	}
 
 	@RequestMapping(value = "/temperature-detection", method = RequestMethod.PUT)
