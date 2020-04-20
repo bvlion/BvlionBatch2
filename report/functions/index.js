@@ -59,7 +59,6 @@ app.use('/push_message/topic', (req, res) => {
     }
 
     const message = {
-      priority: 'high',
       data: data,
       topic: 'server_message'
     }

@@ -99,7 +99,7 @@ public class TimesController {
 			return;
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
-		database.getReference("holiday").addValueEventListener(new ValueEventListener() {
+		database.getReference("holiday").addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				if (!(checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
