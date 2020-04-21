@@ -25,4 +25,8 @@
     <select id="allUsers" resultType="string">
         SELECT user_name FROM users WHERE user_name
     </select>
+
+    <select id="userInHome" resultType="int">
+        SELECT in_home_flag FROM users WHERE user_name = #{user}
+    </select>
 </mapper>

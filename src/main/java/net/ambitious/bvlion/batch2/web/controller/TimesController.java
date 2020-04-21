@@ -10,6 +10,7 @@ import net.ambitious.bvlion.batch2.enums.TimerDateEnum;
 import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.mapper.TimerDataMapper;
+import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
@@ -38,6 +39,9 @@ public class TimesController {
 
 	@NonNull
 	private final TimerDataMapper timerDataMapper;
+
+	@NonNull
+	private final UserMapper userMapper;
 
 	@NonNull
 	private final AppParams appParams;
@@ -94,16 +98,18 @@ public class TimesController {
 	public void googleHomeNotification(
 			@RequestParam("text") String text,
 			@RequestParam(value = "volume", required = false, defaultValue = "45") int volume,
-			@RequestParam(value = "check", required = false, defaultValue = "0") int checkType) {
+			@RequestParam(value = "check", required = false, defaultValue = "0") int checkType,
+			@RequestParam(value = "target", required = false, defaultValue = "") String userName) {
 		if (checkType == CheckHolidayTypeEnum.HOME_HOLIDAY_CHECK.getType() && holidayMapper.isHoliday()) {
 			return;
 		}
+		boolean isUserCheck = !userName.isEmpty() && this.userMapper.userInHome(userName) == 1;
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		database.getReference("holiday").addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				if (!(checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
-						&& NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1)) {
+						&& NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1) && isUserCheck) {
 					AccessUtil.postGoogleHome(
 							text,
 							log,

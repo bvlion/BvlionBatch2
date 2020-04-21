@@ -18,4 +18,6 @@ public interface UserMapper {
     List<String> fcmSendUsers(@Param("user") String user);
 
     List<String> allUsers();
+
+    int userInHome(@Param("user") String user);
 }
