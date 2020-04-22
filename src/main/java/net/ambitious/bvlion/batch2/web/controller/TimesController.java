@@ -108,15 +108,16 @@ public class TimesController {
 		database.getReference("holiday").addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
-				if (!(checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
-						&& NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1) && isUserCheck) {
-					AccessUtil.postGoogleHome(
-							text,
-							log,
-							appParams,
-							volume
-					);
+				if (checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
+						&& (NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1 && isUserCheck)) {
+					return;
 				}
+				AccessUtil.postGoogleHome(
+						text,
+						log,
+						appParams,
+						volume
+				);
 			}
 
 			@Override
