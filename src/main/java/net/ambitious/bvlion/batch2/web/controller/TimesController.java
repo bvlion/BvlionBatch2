@@ -103,13 +103,13 @@ public class TimesController {
 		if (checkType == CheckHolidayTypeEnum.HOME_HOLIDAY_CHECK.getType() && holidayMapper.isHoliday()) {
 			return;
 		}
-		boolean isUserCheck = !userName.isEmpty() && this.userMapper.userInHome(userName) == 1;
+		boolean isUserInHome = !userName.isEmpty() && this.userMapper.userInHome(userName) == 1;
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		database.getReference("holiday").addListenerForSingleValueEvent(new ValueEventListener() {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				if (checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
-						&& (NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1 || isUserCheck)) {
+						&& (NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1 || !isUserInHome)) {
 					return;
 				}
 				AccessUtil.postGoogleHome(
