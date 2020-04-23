@@ -109,7 +109,7 @@ public class TimesController {
 			@Override
 			public void onDataChange(DataSnapshot dataSnapshot) {
 				if (checkType == CheckHolidayTypeEnum.NORMAL_HOLIDAY_CHECK.getType()
-						&& (NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1 && isUserCheck)) {
+						&& (NumberUtils.toInt(dataSnapshot.getValue().toString()) == 1 || isUserCheck)) {
 					return;
 				}
 				AccessUtil.postGoogleHome(
