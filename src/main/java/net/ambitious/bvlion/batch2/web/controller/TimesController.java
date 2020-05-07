@@ -51,6 +51,11 @@ public class TimesController {
 		return AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes()) ? 1 : 0;
 	}
 
+	@RequestMapping(value = "/is/home-holiday", method = RequestMethod.GET)
+	public int isHomeHoliday()  {
+		return holidayMapper.isHoliday() ? 1 : 0;
+	}
+
 	@RequestMapping(value = "/alarm-notification", method = RequestMethod.PUT)
 	public void alarmNotification() throws IOException {
 		var status = holidayMapper.nextDayStatusCheck();
