@@ -107,8 +107,11 @@ public class IftttWebhookController {
 	}
 
 	@RequestMapping(value = "/speak-text", method = RequestMethod.PUT)
-	public String speakTextWebHook(@RequestParam("text") String text)  {
-		AccessUtil.postGoogleHome(text, log, appParams, 45);
+	public String speakTextWebHook(
+			@RequestParam("text") String text,
+			@RequestParam(value = "volume", required = false, defaultValue = "45") int volume
+	) {
+		AccessUtil.postGoogleHome(text, log, appParams, volume);
 		return "{}";
 	}
 
