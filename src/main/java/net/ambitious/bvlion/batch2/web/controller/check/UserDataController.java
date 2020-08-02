@@ -10,6 +10,7 @@ import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
 import net.ambitious.bvlion.batch2.util.AppParams;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -77,23 +78,36 @@ public class UserDataController {
 	}
 
 	@Transactional
-	@RequestMapping(value = "/aircon/{mode}/{temp}", method = RequestMethod.POST)
+	@RequestMapping(value = "/aircon/{mode}/{temps}", method = RequestMethod.POST)
 	public void saveAirconStatus(
 			@PathVariable int mode,
-			@PathVariable int temp,
+			@PathVariable String temps,
 			@RequestParam("text") String errorMessage
 	) {
-		String message;
+		int temp;
+		String typeMessage = "";
+		try {
+			temp = Integer.parseInt(temps);
+		} catch (NumberFormatException e) {
+			temp = NumberUtils.toInt(temps.substring(0, 2));
+			if (temps.substring(2).equals("work")) {
+				typeMessage = "仕事用の";
+			} else {
+				typeMessage = "睡眠用の";
+			}
+		}
+
 		if (StringUtils.isEmpty(errorMessage)) {
 			this.realtimeSettingMapper.updateAirconMode(mode, temp);
 		}
 
+		String message;
 		switch (mode) {
 			case 0:
 				message = "エアコンを停止させました。";
 				break;
 			case 1:
-				message = String.format("冷房を%s度で起動させました。", temp);
+				message = String.format("冷房を%s%s度で起動させました。", typeMessage, temp);
 				break;
 			case 2:
 				message = String.format("暖房を%s度で起動させました。", temp);
