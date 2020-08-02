@@ -78,19 +78,19 @@ public class UserDataController {
 	}
 
 	@Transactional
-	@RequestMapping(value = "/aircon/{mode}/{temp}", method = RequestMethod.POST)
+	@RequestMapping(value = "/aircon/{mode}/{temps}", method = RequestMethod.POST)
 	public void saveAirconStatus(
 			@PathVariable int mode,
-			@PathVariable String tempString,
+			@PathVariable String temps,
 			@RequestParam("text") String errorMessage
 	) {
 		int temp;
 		String typeMessage = "";
 		try {
-			temp = Integer.parseInt(tempString);
+			temp = Integer.parseInt(temps);
 		} catch (NumberFormatException e) {
-			temp = NumberUtils.toInt(tempString.substring(0, 2));
-			if (tempString.substring(2).equals("work")) {
+			temp = NumberUtils.toInt(temps.substring(0, 2));
+			if (temps.substring(2).equals("work")) {
 				typeMessage = "仕事用の";
 			} else {
 				typeMessage = "睡眠用の";
