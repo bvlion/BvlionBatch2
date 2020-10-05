@@ -26,7 +26,6 @@
 * 女の子の日が終わった
 * 女の子の日が来た
 * SPにログ保存
-* 麻衣の体温記録
 
 ### 音声レスポンスを返すだけ
 
@@ -36,17 +35,8 @@
 ### Firebase Realtime Database
 
 * 壁扇風機
-* 加湿器消して
-* 加湿器つけて
 * コンポの電源
 * CD起動
-* テレビ チャンネル変更
-* テレビ
-* 掃除終了
-* 掃除開始
-* リズム風
-* 扇風機の風量
-* 扇風機の電源
 * エアコン停止
 * 除湿起動
 * 暖房起動
@@ -67,9 +57,9 @@
 ## Slack 連携
 
 * youtube-dl
-    * <曲名><URL> で POST すると別サーバーで mp3 に変換して登録する。
+    * <曲名>< URL > で POST すると別サーバーで mp3 に変換して登録する。
 * 占い通知
-* ジョルダン遅延情報（ Twitter ）
+* ジョルダン遅延情報（ Twitter ）停止中
 * Twitter の 画像だけを投稿
 
 ## 諸々連携
@@ -109,8 +99,8 @@ PATH=${JAVA_HOME}/bin:${PATH}
 
 ## 環境変数系のローカル準備
 
-* application.propertiesの値はConfig Varsから値を確認し、export key=valueする
+* application.properties の値は Config Vars から値を確認し、export key=value する
 * twitter4j
-    * Dropboxにあるのでsrc/main/resourcesに置く
+    * Dropbox にあるので src/main/resources に置く
 * 初期データ
-    * Dropboxにあるので実行
+    * Dropbox にあるので実行
