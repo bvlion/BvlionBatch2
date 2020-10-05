@@ -3,6 +3,7 @@ package net.ambitious.bvlion.batch2.util;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.ambitious.bvlion.batch2.web.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -29,7 +30,8 @@ public class ProjectControllerAdvice {
         final String message = "ControllerでExceptionが発生したようです。";
 
         if (!(exception instanceof HttpRequestMethodNotSupportedException)
-                && !(exception instanceof HttpMediaTypeNotSupportedException)) {
+                && !(exception instanceof HttpMediaTypeNotSupportedException)
+                && !(exception instanceof NotFoundException)) {
             AccessUtil.exceptionPost(message, log, exception, appParams);
         }
 
