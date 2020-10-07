@@ -13,6 +13,8 @@ public interface UserMapper {
 
     void userModeUpdate(@Param("user") String user, @Param("ip") String ip, @Param("mode") int mode);
 
+    void homeIpUpdate(@Param("ip") String ip);
+
     int userCount();
 
     List<String> fcmSendUsers(@Param("user") String user);

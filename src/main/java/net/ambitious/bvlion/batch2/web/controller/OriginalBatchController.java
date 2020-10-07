@@ -1,17 +1,24 @@
 package net.ambitious.bvlion.batch2.web.controller;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.ambitious.bvlion.batch2.enums.CheckHolidayTypeEnum;
 import net.ambitious.bvlion.batch2.mapper.*;
 import net.ambitious.bvlion.batch2.util.*;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -34,10 +41,10 @@ public class OriginalBatchController {
     private static final String JORUDAN_ICON = "https://pbs.twimg.com/profile_images/753471803/JorudanLive-Icon.png";
 
     @NonNull
-    private AppParams appParams;
+    private final AppParams appParams;
 
     @NonNull
-    private DatingMapper datingMapper;
+    private final DatingMapper datingMapper;
 
     @NonNull
     private final HolidayMapper holidayMapper;
@@ -47,6 +54,9 @@ public class OriginalBatchController {
 
     @NonNull
     private final MailApiMapper mailApiMapper;
+
+    @NonNull
+    private final UserMapper userMapper;
 
     @RequestMapping(value = "/dating-notification", method = RequestMethod.PUT) // cron = "0 0 6 * * *"
     public void datingNotification() {
@@ -215,5 +225,22 @@ public class OriginalBatchController {
     @RequestMapping(value = "/mail-api", method = RequestMethod.PUT)
     public void mailFolderApi() {
         new Thread(() -> Mail.getInstance().moveAndSlack(appParams, mailApiMapper.selectTarget())).start();
+    }
+
+    @Transactional
+    @RequestMapping(value = "/ip-set", method = RequestMethod.PUT)
+    public void ipSet() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database.getReference("ip").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                userMapper.homeIpUpdate(dataSnapshot.getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                log.warn("ipSet#onCancelled", databaseError.toException());
+            }
+        });
     }
 }
