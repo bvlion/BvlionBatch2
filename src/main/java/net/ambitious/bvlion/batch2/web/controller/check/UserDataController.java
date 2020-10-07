@@ -44,10 +44,10 @@ public class UserDataController {
 	}
 
 	@Transactional
-	@RequestMapping(value = "/status/{user}/{mode}", method = RequestMethod.POST)
-	public void saveUserStatus(@PathVariable String user, @PathVariable int mode) {
+	@RequestMapping(value = "/status/{user}/{mode}/{ip}", method = RequestMethod.POST)
+	public void saveUserStatus(@PathVariable String user, @PathVariable String ip, @PathVariable int mode) {
 		// 在宅状況を更新
-		this.userMapper.userModeUpdate(user, mode);
+		this.userMapper.userModeUpdate(user, ip, mode);
 
 		// 在宅数取得
 		int count = this.userMapper.userCount();
