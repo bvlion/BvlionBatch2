@@ -11,7 +11,9 @@ import java.util.List;
 public interface UserMapper {
     int fcmUpdate(@Param("user") String user);
 
-    void userModeUpdate(@Param("user") String user, @Param("mode") int mode);
+    void userModeUpdate(@Param("user") String user, @Param("ip") String ip, @Param("mode") int mode);
+
+    void homeIpUpdate(@Param("ip") String ip);
 
     int userCount();
 

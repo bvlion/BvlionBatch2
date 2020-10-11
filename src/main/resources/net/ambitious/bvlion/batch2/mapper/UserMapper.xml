@@ -10,8 +10,15 @@
 
     <update id="userModeUpdate">
         UPDATE users SET
-        in_home_flag = #{mode}
+        in_home_flag = #{mode},
+        ip_address = #{ip}
         WHERE user_name = #{user}
+    </update>
+
+    <update id="homeIpUpdate">
+        UPDATE users SET
+        ip_address = #{ip}
+        WHERE user_name = 'gudetama'
     </update>
 
     <select id="userCount" resultType="int">
