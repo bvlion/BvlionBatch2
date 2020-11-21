@@ -7,11 +7,9 @@ import com.google.firebase.database.ValueEventListener;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.ambitious.bvlion.batch2.enums.CheckHolidayTypeEnum;
 import net.ambitious.bvlion.batch2.mapper.*;
 import net.ambitious.bvlion.batch2.util.*;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.apache.http.client.fluent.Request;
@@ -45,12 +43,6 @@ public class OriginalBatchController {
 
     @NonNull
     private final DatingMapper datingMapper;
-
-    @NonNull
-    private final HolidayMapper holidayMapper;
-
-    @NonNull
-    private final ExecTimeMapper execTimeMapper;
 
     @NonNull
     private final MailApiMapper mailApiMapper;
@@ -168,19 +160,6 @@ public class OriginalBatchController {
             @RequestParam("searchValue") String searchValue,
             @RequestParam("date") String date
     ) throws IOException {
-        if (AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes())) {
-            var details = detail.split("〕");
-            var section = details[0]
-                    .substring(1)
-                    .replaceAll("（.*）", "")
-                    .replace("〜", "から")
-                    + "の区間";
-            var state = details[1].split("／")[0];
-            var googleHomeMessage = searchValue + "の" + section + "で"
-                    + (state.equals("止まってる") ? state : state + "の") + "ようです。";
-            AccessUtil.postGoogleHome(googleHomeMessage, log, appParams, 50);
-        }
-
         var message = new StringBuilder();
         message.append(detail);
         if (StringUtils.isNoneBlank(description)) {
@@ -196,7 +175,6 @@ public class OriginalBatchController {
                 message.toString(),
                 JORUDAN_ICON
         ).send(appParams);
-        
     }
 
     @RequestMapping(value = "/twitter-images", method = RequestMethod.PUT)

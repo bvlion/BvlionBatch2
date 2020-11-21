@@ -7,7 +7,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.enums.CheckHolidayTypeEnum;
 import net.ambitious.bvlion.batch2.enums.HolidayEnum;
 import net.ambitious.bvlion.batch2.enums.TimerDateEnum;
-import net.ambitious.bvlion.batch2.mapper.ExecTimeMapper;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.mapper.TimerDataMapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
@@ -32,9 +31,6 @@ import java.util.Calendar;
 public class TimesController {
 
 	@NonNull
-	private final ExecTimeMapper execTimeMapper;
-
-	@NonNull
 	private final HolidayMapper holidayMapper;
 
 	@NonNull
@@ -45,11 +41,6 @@ public class TimesController {
 
 	@NonNull
 	private final AppParams appParams;
-
-	@RequestMapping(value = "/is/time-notification", method = RequestMethod.GET)
-	public int isTimeNotification()  {
-		return AccessUtil.isExecTime(holidayMapper.isHoliday(), execTimeMapper.selectExecTimes()) ? 1 : 0;
-	}
 
 	@RequestMapping(value = "/is/home-holiday", method = RequestMethod.GET)
 	public int isHomeHoliday()  {
