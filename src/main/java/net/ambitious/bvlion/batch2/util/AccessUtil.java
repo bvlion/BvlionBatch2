@@ -4,8 +4,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jcraft.jsch.JSchException;
 import lombok.extern.slf4j.Slf4j;
-import net.ambitious.bvlion.batch2.entity.ExecTimeEntity;
-import net.ambitious.bvlion.batch2.enums.ExecTimeEnum;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.json.JSONException;
@@ -199,38 +197,6 @@ public class AccessUtil {
 			}
 		}
 		return bout.toByteArray();
-	}
-
-	public static boolean isExecTime(boolean isHoliday, List<ExecTimeEntity> execTimes) {
-		if (isHoliday) {
-			return false;
-		}
-
-		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
-
-		Calendar start1Time = getTargetTime(ExecTimeEnum.FROM1, execTimes);
-		Calendar end1Time = getTargetTime(ExecTimeEnum.TO1, execTimes);
-
-		if (cal.after(start1Time) && cal.before(end1Time)) {
-			return true;
-		}
-
-		Calendar start5Time = getTargetTime(ExecTimeEnum.FROM5, execTimes);
-		Calendar end5Time = getTargetTime(ExecTimeEnum.TO5, execTimes);
-
-		return cal.after(start5Time) && cal.before(end5Time) && cal.get(Calendar.MINUTE) % 5 == 0;
-	}
-
-	private static Calendar getTargetTime(ExecTimeEnum execTimeEnum, List<ExecTimeEntity> execTimes) {
-		Calendar cal = Calendar.getInstance(AccessUtil.TOKYO);
-		return execTimes.stream()
-				.filter(value -> value.getType() == execTimeEnum.getType())
-				.map(value -> {
-					cal.set(Calendar.HOUR_OF_DAY, value.getHours());
-					cal.set(Calendar.MINUTE, value.getMinutes());
-					return cal;
-				}
-				).findFirst().orElse(cal);
 	}
 
 	public static void sendTokenMessage(
