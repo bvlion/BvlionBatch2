@@ -59,13 +59,16 @@ public class AccessUtil {
 	));
 
 	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume) {
+		postGoogleHome(message, log, appParams, volume, false);
+	}
+	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume, boolean study) {
 		if (!appParams.isProduction()) {
 			log.info(String.format("{message: \"%s\", volume: %s}", message, volume));
 			return;
 		}
 		FirebaseDatabase database = FirebaseDatabase.getInstance();
 		DatabaseReference ref = database.getReference("notifier");
-		ref.setValueAsync(String.format("%s … %s … %s", message, getYmdhms(), volume));
+		ref.setValueAsync(String.format("%s … %s … %s … %s", message, getYmdhms(), volume, study));
     }
 
 	public static String convertEn2Ja(String enWord, Logger log) {
@@ -159,7 +162,7 @@ public class AccessUtil {
 	}
 
 	static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
-		postGoogleHome(message, log, appParams, 20);
+		postGoogleHome(message, log, appParams, 20, true);
 
 		try {
 			new SlackHttpPost(
