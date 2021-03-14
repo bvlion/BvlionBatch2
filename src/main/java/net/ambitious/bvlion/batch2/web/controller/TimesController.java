@@ -95,6 +95,7 @@ public class TimesController {
 			@RequestParam("text") String text,
 			@RequestParam(value = "volume", required = false, defaultValue = "45") int volume,
 			@RequestParam(value = "check", required = false, defaultValue = "0") int checkType,
+			@RequestParam(value = "study", required = false, defaultValue = false) boolean study,
 			@RequestParam(value = "target", required = false, defaultValue = "") String userName) {
 		if (checkType == CheckHolidayTypeEnum.HOME_HOLIDAY_CHECK.getType() && holidayMapper.isHoliday()) {
 			return;
@@ -112,7 +113,8 @@ public class TimesController {
 						text,
 						log,
 						appParams,
-						volume
+						volume,
+						study
 				);
 			}
 
