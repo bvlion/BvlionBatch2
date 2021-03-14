@@ -58,6 +58,9 @@ public class AccessUtil {
 			}
 	));
 
+	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume) {
+		postGoogleHome(message, log, appParams, volume, false);
+	}
 	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume, boolean study) {
 		if (!appParams.isProduction()) {
 			log.info(String.format("{message: \"%s\", volume: %s}", message, volume));
@@ -159,7 +162,7 @@ public class AccessUtil {
 	}
 
 	static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
-		postGoogleHome(message, log, appParams, 20);
+		postGoogleHome(message, log, appParams, 20, true);
 
 		try {
 			new SlackHttpPost(
