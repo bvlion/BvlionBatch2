@@ -1,12 +1,9 @@
-import com.github.spotbugs.SpotBugsTask
-
 plugins {
 	id 'org.springframework.boot' version '2.1.7.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.8.RELEASE'
 	id 'java'
 	id 'idea'
 	id 'checkstyle'
-	id 'com.github.spotbugs' version '2.0.0'
 }
 
 group = 'net.ambitious.bvlion.batch2'
@@ -52,17 +49,4 @@ checkstyle {
 	toolVersion '7.8.1'
 	configFile file("$rootDir/checkstyle.xml")
 	checkstyleTest.enabled false
-}
-
-tasks.withType(SpotBugsTask) {
-	reports {
-		xml.enabled = false
-		html.enabled = true
-	}
-
-	classes = classes.filter {
-		!it.path.contains(new File("config/").path) &&
-				!it.path.contains(new File("net.ambitious.mapper/").path) &&
-				!it.path.contains(new File("logback.xml").path)
-	}
 }
