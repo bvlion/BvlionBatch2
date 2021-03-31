@@ -156,6 +156,7 @@ public class TimesController {
 							realtimeSettingMapper
 					);
 					break;
+				default:
 			}
 		});
 	}

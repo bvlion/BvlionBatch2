@@ -62,6 +62,7 @@ public class AccessUtil {
 	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume) {
 		postGoogleHome(message, log, appParams, volume, false);
 	}
+
 	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume, boolean study) {
 		if (!appParams.isProduction()) {
 			log.info(String.format("{message: \"%s\", volume: %s}", message, volume));
@@ -248,7 +249,8 @@ public class AccessUtil {
 	private static String touchFirebaseFunctions(String url, String basic) throws IOException {
 		var uri = new URL(url);
 		var con = (HttpURLConnection) uri.openConnection();
-		con.setRequestProperty("Authorization", "Basic " + Base64.getEncoder().encodeToString(basic.getBytes(StandardCharsets.UTF_8)));
+		con.setRequestProperty("Authorization", "Basic " +
+				Base64.getEncoder().encodeToString(basic.getBytes(StandardCharsets.UTF_8)));
 		con.setUseCaches(false);
 
 		try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
@@ -261,7 +263,7 @@ public class AccessUtil {
 			int temp,
 			AppParams appParams,
 			RealtimeSettingMapper realtimeSettingMapper
-			) {
+	) {
 		if (StringUtils.isEmpty(appParams.getRemoAirconUrl())) {
 			return;
 		}
