@@ -4,6 +4,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.jcraft.jsch.JSchException;
 import lombok.extern.slf4j.Slf4j;
+import net.ambitious.bvlion.batch2.mapper.RealtimeSettingMapper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.FastDateFormat;
 import org.json.JSONException;
@@ -253,5 +254,71 @@ public class AccessUtil {
 		try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
 			return br.lines().collect(Collectors.joining("\n"));
 		}
+	}
+
+	public static void airconRemoPost(
+			int mode,
+			int temp,
+			AppParams appParams,
+			RealtimeSettingMapper realtimeSettingMapper
+			) {
+		if (StringUtils.isEmpty(appParams.getRemoAirconUrl())) {
+			return;
+		}
+
+		String message;
+		String parameter = null;
+		var param = new StringBuilder("temperature=");
+		param.append(temp);
+		param.append("&air_volume=auto&operation_mode=");
+		switch (mode) {
+			case 0: // 停止
+				message = "エアコンを停止させました。";
+				parameter = "button=power-off";
+				break;
+			case 1: // 冷房
+				message = String.format("冷房を%s度で起動させました。", temp);
+				param.append("cool");
+				break;
+			case 2: // 除湿
+				message = String.format("除湿を%s度で起動させました。", temp);
+				param.append("dry");
+				break;
+			case 3: // 暖房
+				message = String.format("暖房を%s度で起動させました。", temp);
+				param.append("warm");
+				break;
+			default:
+				return;
+		}
+		if (StringUtils.isEmpty(parameter)) {
+			parameter = param.toString();
+		}
+
+		try {
+			var url = new URL(appParams.getRemoAirconUrl());
+			var con = (HttpURLConnection) url.openConnection();
+			con.setRequestMethod("POST");
+			con.setUseCaches(false);
+			con.setDoInput(true);
+			con.setDoOutput(true);
+
+			con.setRequestProperty("accept", "application/json");
+			con.setRequestProperty("Authorization", "Bearer " + appParams.getRemoToken());
+
+			try (var wr = new DataOutputStream(con.getOutputStream())) {
+				wr.writeBytes(parameter);
+			}
+
+			try (var br = new BufferedReader(new InputStreamReader(con.getInputStream(), StandardCharsets.UTF_8))) {
+				log.info("aircon exec response is\n" + br.lines().collect(Collectors.joining("\n")));
+			}
+		} catch (Exception e) {
+			log.warn("aircon error", e);
+		}
+
+		realtimeSettingMapper.updateAirconMode(mode, temp);
+		sendTopicMessage("エアコン起動情報", message, "aircon",
+				appParams.getFirebaseFunctionUrl(), appParams.getFirebaseBasicAuth());
 	}
 }
