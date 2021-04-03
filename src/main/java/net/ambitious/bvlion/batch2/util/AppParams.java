@@ -35,4 +35,7 @@ public class AppParams {
 
 	private String firebaseFunctionUrl;
 	private String firebaseBasicAuth;
+
+	private String remoAirconUrl;
+	private String remoToken;
 }

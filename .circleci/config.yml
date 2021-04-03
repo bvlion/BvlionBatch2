@@ -34,7 +34,6 @@ jobs:
           name: Report file move
           command: |
             mv build/reports/checkstyle report/functions/static/checkstyle
-            mv build/reports/spotbugs report/functions/static/spotbugs
             mv build/reports/tests report/functions/static/tests
             mkdir /tmp/workspace
             mv report /tmp/workspace

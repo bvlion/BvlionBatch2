@@ -8,6 +8,7 @@ import net.ambitious.bvlion.batch2.enums.CheckHolidayTypeEnum;
 import net.ambitious.bvlion.batch2.enums.HolidayEnum;
 import net.ambitious.bvlion.batch2.enums.TimerDateEnum;
 import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
+import net.ambitious.bvlion.batch2.mapper.RealtimeSettingMapper;
 import net.ambitious.bvlion.batch2.mapper.TimerDataMapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
@@ -41,6 +42,9 @@ public class TimesController {
 
 	@NonNull
 	private final AppParams appParams;
+
+	@NonNull
+	private final RealtimeSettingMapper realtimeSettingMapper;
 
 	@RequestMapping(value = "/is/home-holiday", method = RequestMethod.GET)
 	public int isHomeHoliday()  {
@@ -131,40 +135,29 @@ public class TimesController {
 		timerDataMapper.selectExecTimerSetting(
 				TimerDateEnum.columnName(cal.get(Calendar.DAY_OF_WEEK)),
 				FastDateFormat.getInstance("HH:mm", AccessUtil.TOKYO).format(cal) + ":00"
-		).stream().map(entity -> {
+		).forEach(entity -> {
 			if (entity.isHolidayDecision() && holidayMapper.isHoliday()) {
-				return null;
+				return;
 			}
 			switch (entity.getBehaviorType()) {
 				case 1: // エアコンON
-					var param = new StringBuilder("timer" + System.currentTimeMillis() + " … ");
-					switch (entity.getAirconType()) {
-						case 1: // 冷房
-							param.append("aircon:cool");
-							param.append((int) entity.getTemperature());
-							break;
-						case 2: // 除湿
-							param.append("aircon:dry");
-							break;
-						case 3: // 暖房
-							param.append("aircon:hot");
-							param.append((int) entity.getTemperature());
-							break;
-						default:
-							return null;
-					}
-					param.append(" … 1");
-					return param.toString();
+					AccessUtil.airconRemoPost(
+							entity.getAirconType(),
+							(int) entity.getTemperature(),
+							appParams,
+							realtimeSettingMapper
+					);
+					break;
 				case 2: // エアコンOFF
-					return "\" timer" + System.currentTimeMillis() + " … aircon:off … 1";
+					AccessUtil.airconRemoPost(
+							0,
+							0,
+							appParams,
+							realtimeSettingMapper
+					);
+					break;
 				default:
-					return null;
 			}
-		}).filter(StringUtils::isNotEmpty).forEach(getDatabaseReference()::setValueAsync);
-	}
-
-	private DatabaseReference getDatabaseReference() {
-		FirebaseDatabase database = FirebaseDatabase.getInstance();
-		return database.getReference("node/infrared");
+		});
 	}
 }
