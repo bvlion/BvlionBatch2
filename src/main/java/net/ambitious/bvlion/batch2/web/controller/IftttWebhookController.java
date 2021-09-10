@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import net.ambitious.bvlion.batch2.entity.Mp3Entity;
 import net.ambitious.bvlion.batch2.enums.AutoIncrementEnum;
 import net.ambitious.bvlion.batch2.mapper.AutoIncrementsMapper;
-import net.ambitious.bvlion.batch2.mapper.HolidayMapper;
 import net.ambitious.bvlion.batch2.mapper.Mp3Mapper;
 import net.ambitious.bvlion.batch2.mapper.UserMapper;
 import net.ambitious.bvlion.batch2.util.AccessUtil;
@@ -16,13 +15,11 @@ import net.ambitious.bvlion.batch2.util.AppParams;
 import net.ambitious.bvlion.batch2.util.SlackBinaryPost;
 import net.ambitious.bvlion.batch2.util.SlackHttpPost;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.springframework.http.MediaType;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,44 +37,10 @@ public class IftttWebhookController {
 	private final AppParams appParams;
 
 	@NonNull
-	private final HolidayMapper holidayMapper;
-
-	@NonNull
 	private final UserMapper userMapper;
 
 	@NonNull
 	private final AutoIncrementsMapper autoIncrementsMapper;
-
-	@Transactional
-	@RequestMapping(value = "/holiday-setting/{holidayType}", method = RequestMethod.PUT)
-	public String holidaySetting(@PathVariable int holidayType)  {
-		var setDate = AccessUtil.getNextDate("yyyy-MM-dd");
-
-		var cal = Calendar.getInstance(AccessUtil.TOKYO);
-		cal.add(Calendar.DATE, 1);
-
-		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-			holidayType = 1;
-		}
-
-		if (!holidayMapper.isSetHoliday()) {
-			holidayMapper.setHoliday(setDate, holidayType);
-		}
-		return "Set Holiday " + setDate + " to " + holidayType;
-	}
-
-	@RequestMapping(value = "/normal-holiday-setting/{holidayType}", method = RequestMethod.PUT)
-	public String normalHolidaySetting(@PathVariable int holidayType)  {
-		var cal = Calendar.getInstance(AccessUtil.TOKYO);
-		if (cal.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY || cal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY) {
-			holidayType = 1;
-		}
-
-		FirebaseDatabase database = FirebaseDatabase.getInstance();
-		database.getReference("holiday").setValueAsync(holidayType);
-
-		return "Set Normal Holiday " + AccessUtil.getNow("yyyy-MM-dd") + " to " + holidayType;
-	}
 
 	@RequestMapping(value = "/play-music", method = RequestMethod.PUT)
 	public void playMusicWebhook(@RequestBody Map<String, String> postData)  {
@@ -106,6 +69,13 @@ public class IftttWebhookController {
 		AccessUtil.postGoogleHome(message, log, appParams, volume);
 	}
 
+	@RequestMapping(value = "/speak-time", method = RequestMethod.PUT)
+	public String speakTimeWebHook() {
+		var text = "時刻は" + AccessUtil.getHm() + "です";
+		AccessUtil.postGoogleHome(text, log, appParams, 45);
+		return text;
+	}
+
 	@RequestMapping(value = "/speak-text", method = RequestMethod.PUT)
 	public String speakTextWebHook(
 			@RequestParam("text") String text,
@@ -127,26 +97,6 @@ public class IftttWebhookController {
 		} catch (IOException e) {
 			log.warn("Slack送信エラー", e);
 		}
-	}
-
-	@RequestMapping(value = "/ifttt-set-holiday", method = RequestMethod.POST)
-	public String iftttSetHoliday(@RequestBody Map<String, String> postData) {
-		final var dateType = postData.get("date");
-		final var holidayType = NumberUtils.toInt(postData.get("holiday"));
-
-		if (StringUtils.isBlank(dateType)) {
-			throw new IllegalArgumentException("IFTTT set Holiday：" + postData);
-		}
-
-		if (dateType.equals("1")) {
-			holidayMapper.setHoliday(AccessUtil.getNow("yyyy-MM-dd"), holidayType);
-
-		}
-		if (dateType.equals("2")) {
-			holidayMapper.setHoliday(AccessUtil.getNextDate("yyyy-MM-dd"), holidayType);
-		}
-
-		return "{}";
 	}
 
 	@RequestMapping(value = "/slack-proxy-notification",

@@ -24,7 +24,6 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -45,7 +44,12 @@ public class AccessUtil {
 				.format(Calendar.getInstance(AccessUtil.TOKYO));
 	}
 
-	private static final List<TrustManager> TM = Collections.unmodifiableList(Collections.singletonList(
+    public static String getHm() {
+        return FastDateFormat.getInstance("HH:mm", AccessUtil.TOKYO)
+                .format(Calendar.getInstance(AccessUtil.TOKYO));
+    }
+
+	private static final List<TrustManager> TM = Collections.singletonList(
 			new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
 					return null;
@@ -57,7 +61,7 @@ public class AccessUtil {
 				public void checkServerTrusted(X509Certificate[] xc, String type) {
 				}
 			}
-	));
+	);
 
 	public static void postGoogleHome(String message, Logger log, AppParams appParams, int volume) {
 		postGoogleHome(message, log, appParams, volume, false);
@@ -143,7 +147,7 @@ public class AccessUtil {
 				}
 				jaWord.append(jsonWord.getString("j_pron_spell"));
 			}
-			return String.format(formatWord.toString(), jaWord.toString());
+			return String.format(formatWord.toString(), jaWord);
 		} catch (JSONException e) {
 			log.error("Convert Error", e);
 			return enWord;
@@ -152,15 +156,6 @@ public class AccessUtil {
 
 	public static String getNow(String format) {
 		return DateTimeFormatter.ofPattern(format).format(ZonedDateTime.now(ZoneId.of("Asia/Tokyo")));
-	}
-
-	public static String getNextDate(String format) {
-		var calendar = Calendar.getInstance(AccessUtil.TOKYO);
-		calendar.add(Calendar.DATE, 1);
-		return DateTimeFormatter.ofPattern(format).format(
-				LocalDateTime.ofInstant(calendar.toInstant(),
-						ZoneId.of("Asia/Tokyo"))
-		);
 	}
 
 	static void exceptionPost(String message, Logger log, Exception exception, AppParams appParams) {
