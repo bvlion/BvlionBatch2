@@ -1,9 +1,5 @@
 package net.ambitious.bvlion.batch2.web.controller;
 
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +12,6 @@ import org.apache.http.client.fluent.Request;
 import org.apache.http.client.fluent.Response;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -203,22 +198,5 @@ public class OriginalBatchController {
     @RequestMapping(value = "/mail-api", method = RequestMethod.PUT)
     public void mailFolderApi() {
         new Thread(() -> Mail.getInstance().moveAndSlack(appParams, mailApiMapper.selectTarget())).start();
-    }
-
-    @Transactional
-    @RequestMapping(value = "/ip-set", method = RequestMethod.PUT)
-    public void ipSet() {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        database.getReference("ip").addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                userMapper.homeIpUpdate(dataSnapshot.getValue().toString());
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                log.warn("ipSet#onCancelled", databaseError.toException());
-            }
-        });
     }
 }
