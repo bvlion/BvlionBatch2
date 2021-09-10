@@ -33,23 +33,23 @@ public class SlackBinaryPost {
 	private static final int CONNECTION_TIMEOUT = 10 * 1000;
 
 	/** HttpURLConnection */
-	private HttpURLConnection con;
+	private final HttpURLConnection con;
 	/** バウンダリの本体（ハイフン2つ以降） */
-	private String boundaryBody;
+	private final String boundaryBody;
 
 	/** ファイル名 */
-	private String fileName;
+	private final String fileName;
 	/** 送信データ（byte配列） */
-	private byte[] fileData;
+	private final byte[] fileData;
 	/** タイトル等を入れるマップ */
-	private Map<String, String> textDataMap;
+	private final Map<String, String> textDataMap;
 
 	/**
 	 * コンストラクタ
 	 * @param builder インナークラスBuilder
 	 */
 	private SlackBinaryPost(Builder builder) throws IOException {
-		this.boundaryBody = "*****" + UUID.randomUUID().toString() + "*****";
+		this.boundaryBody = "*****" + UUID.randomUUID() + "*****";
 		this.con = (HttpURLConnection) new URL(SLACK_POST_URL).openConnection();
 
 		this.textDataMap = builder.textDataMap;

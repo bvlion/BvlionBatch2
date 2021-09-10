@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 @Slf4j
 public class SlackHttpPost {
 
-	private String channel;
-	private String username;
-	private String text;
-	private String icon_url;
+	private final String channel;
+	private final String username;
+	private final String text;
+	private final String icon_url;
 
 	public SlackHttpPost(String channel, String username, String text, String icon_url) {
 		this.channel = channel;
