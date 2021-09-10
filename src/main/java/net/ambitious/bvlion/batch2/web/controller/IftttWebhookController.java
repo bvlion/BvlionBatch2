@@ -69,6 +69,13 @@ public class IftttWebhookController {
 		AccessUtil.postGoogleHome(message, log, appParams, volume);
 	}
 
+	@RequestMapping(value = "/speak-time", method = RequestMethod.PUT)
+	public String speakTimeWebHook() {
+		var text = "時刻は" + AccessUtil.getHm() + "です";
+		AccessUtil.postGoogleHome(text, log, appParams, 45);
+		return text;
+	}
+
 	@RequestMapping(value = "/speak-text", method = RequestMethod.PUT)
 	public String speakTextWebHook(
 			@RequestParam("text") String text,

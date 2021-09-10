@@ -44,6 +44,11 @@ public class AccessUtil {
 				.format(Calendar.getInstance(AccessUtil.TOKYO));
 	}
 
+    public static String getHm() {
+        return FastDateFormat.getInstance("HH:mm", AccessUtil.TOKYO)
+                .format(Calendar.getInstance(AccessUtil.TOKYO));
+    }
+
 	private static final List<TrustManager> TM = Collections.singletonList(
 			new X509TrustManager() {
 				public X509Certificate[] getAcceptedIssuers() {
